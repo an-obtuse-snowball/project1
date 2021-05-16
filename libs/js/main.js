@@ -37,10 +37,15 @@ function handleCountryJSON() {
 axios.get('https://restcountries.eu/rest/v2/all?fields=name')
 .then(function (response) {
     //Handle Success
-var data = JSON.parse(response);
-$.each(data, function(key, item) {
-    console.log(item);
-})
+    $("#dropdown-menu").append("<button class='dropdown-item' value = "+response.data[0].name+" type='button'"+response.data[0].name+"</button>");
+    /*
+    $.each(response.data, function(i, item) {
+        $("#dropdown-menu").append("<button class='dropdown-item' value = "+response.data[i].name+" type='button'"+response.data[i].name+"</button>");
+        console.log(response.data[i].name);
+    }) */
+
+
+
 })
 .catch(function(error) {
     //handle errors
