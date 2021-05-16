@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 $executionStartTime = microtime(true);
 
-$url='https://restcountries.eu/rest/v2/all';
+$url='https://restcountries.eu/rest/v2/all?fields=name';
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -18,12 +18,12 @@ $result=curl_exec($ch);
 curl_close($ch);
 
 $decode = json_decode($result,true);	
-if(isset($decode)){	
+if(isset($decode['name'])){	
 $output['status']['code'] = "200";
 $output['status']['name'] = "ok";
 $output['status']['description'] = "success";
 $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-$output['data'] = $decode;
+$output['data'] = $decode['name'];
 } else {
 $output['status']['code'] = "500";
 $output['status']['name'] = "no data";

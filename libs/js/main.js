@@ -12,6 +12,8 @@ countryObject = {
     }
 };
 
+countries = {};
+
 /* Configuration Options for GeoLocation */
 var geoOptions = {
     enableHighAccuracy: true,
@@ -32,36 +34,26 @@ function error() {
 }
 
 function handleCountryJSON() {
-    $.ajax({
-        url: "./libs/js/getCountryList.php",
-        type: 'POST',
-        dataType: "json",
-        data,
-
-        success: function(result) {
-            console.log("Ajax request success");
-            console.log(JSON.stringify(result));
-            if(result.status.name == "ok") {
-                console.log(result);
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log (errorThrown);
-        }
-    });
-
-    console.log(data);
-
-
-
-
-};
+axios.get('https://restcountries.eu/rest/v2/all?fields=name')
+.then(function (response) {
+    //Handle Success
+var data = JSON.parse(response);
+$.each(data, function(key, item) {
+    console.log(item);
+})
+})
+.catch(function(error) {
+    //handle errors
+    console.log(error);
+})
+.then(function() {
+    console.log("Axios Request - handleCountryJSON: Completed");
+});
+}
+$(document).ready(function () {
 //Requests location and updates the country Object
 navigator.geolocation.getCurrentPosition(success, error, geoOptions);
 
 //Updates the country list to choose from the countries.json
 handleCountryJSON();
-
-
+});
