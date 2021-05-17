@@ -1,1 +1,7 @@
-#mapid { height: 180px; }
+#mapid { 
+    height: 99vh; 
+}
+
+#dropdownList {
+    overflow: hidden;
+}
