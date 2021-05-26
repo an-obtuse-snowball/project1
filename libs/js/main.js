@@ -25,7 +25,6 @@ var geoOptions = {
 function success(pos) {
     countryObject.latitude = pos.coords.latitude;
     countryObject.longitude = pos.coords.longitude;
-    console.log("Successfully acquired device location, updating current data to object.")
 }
 
 function error() {
@@ -38,7 +37,7 @@ axios.get('https://restcountries.eu/rest/v2/all?fields=name')
 .then(function (response) {
     //[Handle Success]
     $.each(response.data, function(i, item) {
-        let listEntry = '<li><a class="dropdown-item" value = '+response.data[i].name+'>'+response.data[i].name+'</a><li>';
+        let listEntry = "<li><a class='dropdown-item' value = '"+response.data[i].name+"' id = '"+response.data[i].name+"'>"+response.data[i].name+"</a><li>";
         $("#dropdownList").append(listEntry);
     }) 
 })
@@ -48,8 +47,22 @@ axios.get('https://restcountries.eu/rest/v2/all?fields=name')
 })
 .then(function() {
     //[Completion Code]
-    console.log("Axios Request - handleCountryJSON: Completed");
 });
+}
+
+function acquireCapitalJSON(countryName) {
+    countryName = encodeURIComponent(countryObject.countryName);
+    console.log(countryName);
+    axios.get('')
+    .then(function (response) {
+        countryObject.capitalName = response.data[0];
+    })
+    .catch(function(error) {
+        console.log(error);
+    })
+    .then(function() {
+    //Once Finished    
+    })
 }
 $(document).ready(function () {
 //Updates the country list to choose from the countries.json
@@ -64,6 +77,15 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     tileSize: 512,
     zoomOffset: -1
 }).addTo(mymap);
-
-;
 });
+
+//Trigger when a country is selected
+$(document).on('click', 'a', function() {
+    if(this.getAttribute("value") === "null") {
+        console.log("Unable to find country value when clicked");
+    }
+    else {
+            console.log(this.getAttribute("value"));
+    acquireCapitalJSON("United Kingdom");
+    }
+})
