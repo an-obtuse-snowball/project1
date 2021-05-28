@@ -11,15 +11,13 @@
   <link rel="stylesheet" href="libs/css/styles.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
   crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-  crossorigin=""></script>
+  <script src="https://kit.fontawesome.com/a5edfd8557.js" crossorigin="anonymous"></script>
 </head>
 
 <body>      
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">The Gazeteer, a project by Michael Snow</a>
+      <a class="navbar-brand" href="#">The Gazeteer</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -37,14 +35,37 @@
     </div>
   </nav>
       </div>
+
       <div id="mapid"></div>
       </div>
 
 
+<!-- Modal -->
+<div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true"  >
+  <div class="modal-dialog modal-dialog-centered fixed-bottom" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Country Details</h5>
+      </div>
+      <div class="modal-body">
+        <i id = countryNameModal class="fas fa-flag"> Country Name: Unknown</i><br>
+        <i id = "capitalModal" class="fas fa-university"> Capital: Unknown</i><br>
+        <i id = "latitudeModal" class="fas fa-arrow-up"> Rough Latitude: Unknown</i><br>
+        <i id = "longitudeModal" class="fas fa-arrow-right"> Rough Longitude: Unknown</i><br>
+        <i id = "populationModal" class="fas fa-users"> Population: Unknown</i><br>
+        <i id = "currencyNameModal" class="fas fa-money-bill-wave"> Currency: Unknown</i><br>
+        <i id = "timezoneModal" class="fas fa-clock"> Time Zone: Unknown</i><br>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>>
-    <script type="text/javascript" src="libs/js/countries.json"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <script src="libs/js/main.js"></script>
 </body>
 </html>
