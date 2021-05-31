@@ -12,5 +12,8 @@
 }
 nav {
 z-index: 5;
-}
+};
 
+#modalWindow {
+    background-color: #216529;
+};

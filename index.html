@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html5>
 
 <html lang="en">
 <head>
@@ -6,6 +6,7 @@
   <meta name="description" content="The Gazeteer | IT Career Switch Project">
   <meta name="keywords" content="Gazeteer">
   <meta name="author" content="Michael Snow">
+  <link rel="shortcut icon" type="image/jpg" href="https://img.icons8.com/office/16/000000/globe-earth.png"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
   <link rel="stylesheet" href="libs/css/styles.css">
@@ -17,7 +18,7 @@
 <body>      
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">The Gazeteer</a>
+      <a class="navbar-brand" href=".">The Gazeteer</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -43,7 +44,7 @@
 <!-- Modal -->
 <div class="modal fade" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true"  >
   <div class="modal-dialog modal-dialog-centered fixed-bottom" role="document">
-    <div class="modal-content">
+    <div class="modal-content" id = "modalWindow">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Country Details</h5>
       </div>
@@ -54,7 +55,14 @@
         <i id = "longitudeModal" class="fas fa-arrow-right"> Rough Longitude: Unknown</i><br>
         <i id = "populationModal" class="fas fa-users"> Population: Unknown</i><br>
         <i id = "currencyNameModal" class="fas fa-money-bill-wave"> Currency: Unknown</i><br>
+
         <i id = "timezoneModal" class="fas fa-clock"> Time Zone: Unknown</i><br>
+        <hr>
+        <i id = "temperatureModal" class="fas fa-thermometer-half"> Temperature(Celsius): Unknown</i><br>
+        <i id = "humidityModal" class="fas fa-tint"> Humiditity: Unknown</i><br>
+        <i id = "pressureModal" class="fas fa-compress-alt"> Pressure: Unknown</i><br>
+        <hr>
+
       </div>
     </div>
   </div>

@@ -6,11 +6,14 @@ countryObject = {
     longitude: "Unknown Longitude",
     population: 0,
     currencyName: "Unknown currency name",  
-    baseCurrencyValue: 0, 
+    currencyCode: "Unknown Currency Code",
+    currencyValue: 1,
+    baseCurrencyValue: 1,
+    baseCurrencyCode: "GBP", 
     weather : {
-        Temperature: 0,
-        Humidity: 0,
-        Precipitation: 0
+        temperature: 0,
+        humidity: 0,
+        pressure: 0
     },
     timezone: "Unknown timezone",
 
@@ -21,7 +24,7 @@ var worldMap;
 
 //Requests location and updates the country Object
 if(!navigator.geolocation) {
-    status.textContent = 'Geolocation is not supported by your browser';
+    alert('Geolocation is not supported by your browser');
 } else {
 navigator.geolocation.getCurrentPosition(success, error, geoOptions);
 };
@@ -35,12 +38,10 @@ var geoOptions = {
 function success(pos) {
     countryObject.latitude = pos.coords.latitude;
     countryObject.longitude = pos.coords.longitude;
-    $('model').append("Location");
 }
 
 function error() {
     console.log("Failed to get geolocation from device");
-    $('model').append("<p> Failed to acquire the current coordinates</p>");
 }
 
 //Populates the list of countries
@@ -70,28 +71,58 @@ function loadCountryData(countryName) {
         countryObject.latitude = response.data[0].latlng[0];
         countryObject.longitude = response.data[0].latlng[1];
         countryObject.currencyName = response.data[0].currencies[0].name;
+        countryObject.currencyCode = response.data[0].currencies[0].code;
+        console.log(countryObject.currencyCode);
         countryObject.population = response.data[0].population;
         countryObject.timezone = response.data[0].timezones[0];
-        console.log(countryObject);
     })
     .catch(function(error) {
         console.log(error);
     })
     .then(function() {
-        $('#countryNameModal').html('Country Name: '+countryObject.countryName);
-        $('#capitalModal').html('Capital: '+countryObject.capitalName);
-        $('#latitudeModal').html('Rough Latitude: '+countryObject.latitude);
-        $('#longitudeModal').html('Rough Longitude: '+countryObject.longitude);
-        $('#populationModal').html('Population: '+countryObject.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#currencyNameModal').html('Currency: '+countryObject.currencyName);
-        $('#timezoneModal').html('Time Zone: '+countryObject.timezone);  
+        $('#countryNameModal').html(' Country Name:  '+countryObject.countryName);
+        $('#capitalModal').html(' Capital:  '+countryObject.capitalName);
+        $('#latitudeModal').html(' Rough Latitude:  '+countryObject.latitude);
+        $('#longitudeModal').html(' Rough Longitude:  '+countryObject.longitude);
+        $('#populationModal').html(' Population:  '+countryObject.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#currencyNameModal').html(' Currency:  '+countryObject.currencyName+' ('+countryObject.currencyCode+')')
+        $('#timezoneModal').html(' Time Zone:  '+countryObject.timezone);  
+    });
+    axios.get('https://api.openweathermap.org/data/2.5/weather?units=metric&lat='+countryObject.latitude+'&lon='+countryObject.longitude+'&appid=442d9c285ccba223632883d70318b93c')
+    .then(function (response) {
+        countryObject.weather.Temperature = response.data.main.feels_like;
+        countryObject.weather.humidity = response.data.main.humidity;
+        countryObject.weather.pressure = response.data.main.pressure;
+        })
+    .catch(function(error) {
+        console.log(error);
     })
-}
+    .then(function() {
+        $('#temperatureModal').html(' Temperature:  '+countryObject.weather.Temperature+' &#8451;');
+        $('#humidityModal').html(' Humiditity:  '+countryObject.weather.humidity+'%')
+        $('#pressureModal').html(' Pressure:  '+countryObject.weather.pressure+'Mb');  
 
+    });
+/*
+    axios.get('https://v6.exchangerate-api.com/v6/2b9243e24bda6c92c0952a9c/latest/GBP')
+    .then(function (response) {
+        console.log(response.data.conversionrates[countryObject.currencyCode]);
+    })
+    .catch(function(error) {
+
+    })
+    */
+    };
 $(document).ready(function () {
 //Updates the country list to choose from the countries.json
 handleCountryJSON();
-worldMap = L.map('mapid').setView([countryObject.latitude, countryObject.longitude], 13)
+try {
+    worldMap = L.map('mapid').setView([countryObject.latitude, countryObject.longitude], 13)
+}
+catch(err) {
+    console.log(err);
+}
+
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
     maxZoom: 14,
