@@ -2,6 +2,7 @@
 countryObject = {
     countryName: "No Country known", //Replace with function to instantiate
     capitalName: "Capital City is unknown", //Replace with function to instantiate
+    isoCode: "",
     latitude: "Unknown latitude",
     longitude: "Unknown Longitude",
     population: 0,
@@ -46,13 +47,16 @@ function error() {
 
 //Populates the list of countries
 function handleCountryJSON() {
-axios.get('https://restcountries.eu/rest/v2/all?fields=name')
+axios.get('https://michaelsnow.xyz/project1/libs/js/countryBorders.json')
 .then(function (response) {
     //[Handle Success]
-    $.each(response.data, function(i, item) {
-        let listEntry = "<li><a class='dropdown-item' value = '"+response.data[i].name+"' id = '"+response.data[i].name+"'>"+response.data[i].name+"</a><li>";
+    $.each(response.data.features, function(i, item) {
+        
+        let listEntry = "<li><a class='dropdown-item' value = '"+response.data.features[i].properties.name+"' id = '"+response.data.features[i].properties.name+"'>"+response.data.features[i].properties.name+"</a><li>";
         $("#dropdownList").append(listEntry);
     }) 
+
+
 })
 .catch(function(error) {
     //[Handle errors]
@@ -75,6 +79,7 @@ function loadCountryData(countryName) {
         console.log(countryObject.currencyCode);
         countryObject.population = response.data[0].population;
         countryObject.timezone = response.data[0].timezones[0];
+        countryObject.iso2 = response.data[0].alpha2Code;
     })
     .catch(function(error) {
         console.log(error);
@@ -103,16 +108,21 @@ function loadCountryData(countryName) {
         $('#pressureModal').html(' Pressure:  '+countryObject.weather.pressure+'Mb');  
 
     });
-/*
-    axios.get('https://v6.exchangerate-api.com/v6/2b9243e24bda6c92c0952a9c/latest/GBP')
-    .then(function (response) {
-        console.log(response.data.conversionrates[countryObject.currencyCode]);
-    })
-    .catch(function(error) {
-
-    })
-    */
-    };
+    axios.get('https://michaelsnow.xyz/project1/libs/js/countryBorders.json')
+    .then(function(response) {
+        console.log(response.data.features[0]);
+        //each() {}
+        L.geoJSON(response.data.features[0].geometry.coordinates, {
+            style: function (feature) {
+                return {
+                    fillColor: "FFFFFF"
+                };
+            }
+        }).bindPopup(function (layer) {
+            return layer.feature.properties.description;
+        }).addTo(worldMap);
+    }
+    )};
 $(document).ready(function () {
 //Updates the country list to choose from the countries.json
 handleCountryJSON();
@@ -146,6 +156,7 @@ $(document).on('click', '.dropdown-item', function() {
             setTimeout(() => {
                 worldMap.flyTo([countryObject.latitude, countryObject.longitude], 6);
             }, 600);
+            
             //(Configure the model with the new data)
             $('#ModalCenter').modal('show');
     }
