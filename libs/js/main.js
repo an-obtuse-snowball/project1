@@ -115,7 +115,8 @@ function loadCountryData(countryName) {
         L.geoJSON(response.data.features[0].geometry.coordinates, {
             style: function (feature) {
                 return {
-                    fillColor: "FFFFFF"
+                    fillColor: "#FFFFFF"
+                    color: "#000000"
                 };
             }
         }).bindPopup(function (layer) {
