@@ -17,3 +17,9 @@ z-index: 5;
 #modalWindow {
     background-color: #216529;
 };
+
+#modalCenter {
+    position: absolute;
+    display: inline-block;
+    right: 0;
+}
