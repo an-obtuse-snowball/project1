@@ -14,6 +14,13 @@ nav {
 z-index: 5;
 };
 
-#modalWindow {
-    background-color: #216529;
-};
+#modal-content {
+    position: absolute;
+    top: 10px;
+    right: 100px;
+    bottom: 0;
+    left: 0;
+    z-index: 10040;
+    overflow: auto;
+    overflow-y: auto;
+ }
