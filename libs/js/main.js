@@ -33,7 +33,7 @@ var worldMap;
 
 //Requests location and updates the country Object
 if (!navigator.geolocation) {
-    alert('Geolocation is not supported by your browser');
+    console.log('Geolocation is not supported by your browser');
 } else {
     navigator.geolocation.getCurrentPosition(success, error, geoOptions);
 };
@@ -46,10 +46,7 @@ var geoOptions = {
 
 function success(pos) {
     countryObject.latitude, user.latitude = pos.coords.latitude;
-    countryObject.longitude, user.longitude = pos.coords.longitude;
-
-    
-
+    countryObject.longitude, user.longitude = pos.coords.longitude; 
 }
 
 function error() {
@@ -66,6 +63,7 @@ function getIsoFromCoords(lat, long) {
         },
         success: function (response) {
             countryCode = response.data.countryCode;
+
             loadCountryDataFromISO(countryCode);
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -75,30 +73,31 @@ function getIsoFromCoords(lat, long) {
     });
     //return isoCode
     }
-//Populates the list of countries
+//Populates the list of countries - Conversion in progress
 function handleCountryJSON() {
-    axios.get('https://michaelsnow.xyz/project1/libs/js/countryBorders.json')
-        .then(function (response) {
+        //axios.get('https://michaelsnow.xyz/project1/libs/js/countryBorders.json')
+    $.ajax({
+        url: "./libs/php/getCountryBorders.php",
+        type: "get",
+        dataType: "json",
+    success: function (response) {
             //[Handle Success]
             $.each(response.data.features, function (i, item) {
                 let listEntry = "<li><a class='dropdown-item' value = '" + response.data.features[i].properties.iso_a2 + "' id = '" + response.data.features[i].properties.name + "'>" + response.data.features[i].properties.name + "</a><li>";
                 $("#dropdownList").append(listEntry);
-            })
-
-
-        })
-        .catch(function (error) {
+            });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
             //[Handle errors]
             console.log(error);
-        })
-        .then(function () {
-            //[Completion Code]
-        });
+        }
+    })
 }
 
 
-
-function loadCountryDataFromISO(isoCode) {
+  function loadCountryDataFromISO(isoCode) {
+   /*Conversion in progress
+    
     axios.get('https://restcountries.eu/rest/v2/alpha/'+isoCode)
         .then(function (response) {
 
@@ -116,6 +115,7 @@ function loadCountryDataFromISO(isoCode) {
             console.log(error.response);
         })
         .then(function () {
+
             $('#countryNameModal').html(' Country Name:  ' + countryObject.countryName);
             $('#capitalModal').html(' Capital:  ' + countryObject.capitalName);
             $('#latitudeModal').html(' Rough Latitude:  ' + countryObject.latitude);
@@ -123,23 +123,10 @@ function loadCountryDataFromISO(isoCode) {
             $('#populationModal').html(' Population:  ' + countryObject.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#currencyNameModal').html(' Currency:  ' + countryObject.currencyName + ' (' + countryObject.currencyCode + ')')
             $('#timezoneModal').html(' Time Zone:  ' + countryObject.timezone);
-        });
-    axios.get('https://api.openweathermap.org/data/2.5/weather?units=metric&lat=' + countryObject.latitude + '&lon=' + countryObject.longitude + '&appid=442d9c285ccba223632883d70318b93c')
-        .then(function (response) {
-            countryObject.weather.Temperature = response.data.main.feels_like;
-            countryObject.weather.humidity = response.data.main.humidity;
-            countryObject.weather.pressure = response.data.main.pressure;
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-        .then(function () {
-            $('#temperatureModal').html(' Temperature:  ' + countryObject.weather.Temperature + ' &#8451;');
-            $('#humidityModal').html(' Humiditity:  ' + countryObject.weather.humidity + '%')
-            $('#pressureModal').html(' Pressure:  ' + countryObject.weather.pressure + 'Mb');
-
-        });
-    axios.get('https://michaelsnow.xyz/project1/libs/js/countryBorders.json')
+            callWeather(countryObject.latitude, countryObject.longitude);
+            
+        });  
+    $.ajax() {}
         .then(function (response) {
             $.each(response.data.features, function (i, item) {
                 if (response.data.features[i].properties.iso_a2 == countryObject.isoCode) {
@@ -161,9 +148,27 @@ function loadCountryDataFromISO(isoCode) {
             }
             )
         }
-        )
-};
-
+        )CONVERT TO AJAX*/
+}
+function callWeather(wLatitude, wLongitude) {
+    /*
+    axios.get('https://api.openweathermap.org/data/2.5/weather?units=metric&lat=' + wLatitude + '&lon=' + wLongitude + '&appid=442d9c285ccba223632883d70318b93c')
+    .then(function (response) {
+        countryObject.weather.Temperature = response.data.main.feels_like;
+        countryObject.weather.humidity = response.data.main.humidity;
+        countryObject.weather.pressure = response.data.main.pressure;
+    })
+    .catch(function (error) {
+        console.log(error);
+    })
+    .then(function () {
+        $('#temperatureModal').html(' Temperature:  ' + countryObject.weather.Temperature + ' &#8451;');
+        $('#humidityModal').html(' Humiditity:  ' + countryObject.weather.humidity + '%')
+        $('#pressureModal').html(' Pressure:  ' + countryObject.weather.pressure + 'Mb');
+        $('#ModalCenter').modal('show');
+    });
+    CONVERT TO AJAX*/
+}
 //Trigger when a country is selected
 $(document).on('click', '.dropdown-item', function () {
     if (this.getAttribute("value") == "null") {
@@ -188,7 +193,7 @@ $(document).ready(function () {
     handleCountryJSON();
     console.log(getIsoFromCoords(user.latitude, user.longitude));
     try {
-        worldMap = L.map('mapid').setView([user.latitude, user.longitude], 4)
+        worldMap = L.map('mapid').setView([user.latitude, user.longitude], 5)
     }
     catch (err) {
         console.log("oops");
