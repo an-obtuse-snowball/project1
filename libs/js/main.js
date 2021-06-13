@@ -46,7 +46,7 @@ var geoOptions = {
 
 function success(pos) {
     countryObject.latitude, user.latitude = pos.coords.latitude;
-    countryObject.longitude, user.longitude = pos.coords.longitude; 
+    countryObject.longitude, user.longitude = pos.coords.longitude;
 }
 
 function error() {
@@ -66,41 +66,56 @@ function getIsoFromCoords(lat, long) {
 
             loadCountryDataFromISO(countryCode);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             console.log(textStatus, errorThrown);
         }
 
     });
     //return isoCode
-    }
-//Populates the list of countries - Conversion in progress
+}
+//Populates the list of countries
 function handleCountryJSON() {
-        //axios.get('https://michaelsnow.xyz/project1/libs/js/countryBorders.json')
     $.ajax({
-        url: "./libs/php/getCountryBorders.php",
+        url: "./libs/php/getCountryListings.php",
         type: "get",
         dataType: "json",
-    success: function (response) {
+        success: function (response) {
             //[Handle Success]
+            var countryList = [];
             $.each(response.data.features, function (i, item) {
-                let listEntry = "<li><a class='dropdown-item' value = '" + response.data.features[i].properties.iso_a2 + "' id = '" + response.data.features[i].properties.name + "'>" + response.data.features[i].properties.name + "</a><li>";
+                
+                var country = {
+                    countryCode: response.data.features[i].properties.iso_a2,
+                    countryName: response.data.features[i].properties.name 
+                };
+                countryList.push(country);
+                });
+            countryList.sort((a, b) => (a.countryName > b.countryName) ? 1 : -1);
+                          
+            $.each(countryList, function (i, item) {
+                let listEntry = "<li><a class='dropdown-item' value = '" + countryList[i].countryCode + "' id = '" + countryList[i].countryName + "'>" + countryList[i].countryName + "</a><li>";
                 $("#dropdownList").append(listEntry);
-            });
+            })
+
         },
         error: function (jqXHR, textStatus, errorThrown) {
             //[Handle errors]
-            console.log(error);
+            console.log(error, jqXHR, textStatus, errrorThrown);
         }
     })
 }
 
+//Loads data from restCountries, countryborders and WeatherMaps APIs
+function loadCountryDataFromISO(isoCode) {
 
-  function loadCountryDataFromISO(isoCode) {
-   /*Conversion in progress
-    
-    axios.get('https://restcountries.eu/rest/v2/alpha/'+isoCode)
-        .then(function (response) {
-
+    $.ajax({
+        url: './libs/php/getCountryData.php',
+        type: "get",
+        dataType: "json",
+        data: {
+            countryISO: isoCode,
+        },
+        success: function (response) {
             countryObject.countryName = response.data.name;
             countryObject.capitalName = response.data.capital;
             countryObject.latitude = response.data.latlng[0];
@@ -110,12 +125,6 @@ function handleCountryJSON() {
             countryObject.population = response.data.population;
             countryObject.timezone = response.data.timezones[0];
             countryObject.isoCode = response.data.alpha2Code;
-        })
-        .catch(function (error) {
-            console.log(error.response);
-        })
-        .then(function () {
-
             $('#countryNameModal').html(' Country Name:  ' + countryObject.countryName);
             $('#capitalModal').html(' Capital:  ' + countryObject.capitalName);
             $('#latitudeModal').html(' Rough Latitude:  ' + countryObject.latitude);
@@ -124,50 +133,70 @@ function handleCountryJSON() {
             $('#currencyNameModal').html(' Currency:  ' + countryObject.currencyName + ' (' + countryObject.currencyCode + ')')
             $('#timezoneModal').html(' Time Zone:  ' + countryObject.timezone);
             callWeather(countryObject.latitude, countryObject.longitude);
-            
-        });  
-    $.ajax() {}
-        .then(function (response) {
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR, textStatus, errorThrown);
+        }
+    })
+
+    $.ajax({
+        //Pulls the list of borders, loops and filters through the JSON to find the same country with a matching ISO Code
+        url: './libs/php/getCountryBorders.php',
+        type: 'get',
+        dataType: 'json',
+
+        success: function (response) {
             $.each(response.data.features, function (i, item) {
-                if (response.data.features[i].properties.iso_a2 == countryObject.isoCode) {
-                    L.geoJSON(response.data.features[i], {
-                        style: function (feature) {
-                            return {
-                                color: "#BCBCBC",
-                                opacity: 1,
+                if (response.data.features[i].properties.iso_a2 == isoCode) {
+                    L.geoJSON(layerGroup,
+                        {
+                            style: function (feature) {
+                                return {
+                                    color: "#BCBCBC",
+                                    opacity: 1,
 
-                            };
-                        }
-                    }).bindPopup(function (layer) {
-                        return layer.feature.properties.description;
-                    }).addTo(worldMap);
-                }
-                else {
-                }
+                                };
+                            }
+                        }).bindPopup(function (layer) {
+                            return layer.feature.properties.description;
+                        }).addTo(worldMap)
+                        setTimeout(() => {
+                            worldMap.flyTo([countryObject.latitude, countryObject.longitude], 4);
+                        }, 1000);
 
+                }
             }
             )
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            //[Handle errors]
+            console.log(error, jqXHR, textStatus, errorThrown);
         }
-        )CONVERT TO AJAX*/
-}
+    })
+};
 function callWeather(wLatitude, wLongitude) {
-    /*
-    axios.get('https://api.openweathermap.org/data/2.5/weather?units=metric&lat=' + wLatitude + '&lon=' + wLongitude + '&appid=442d9c285ccba223632883d70318b93c')
-    .then(function (response) {
-        countryObject.weather.Temperature = response.data.main.feels_like;
-        countryObject.weather.humidity = response.data.main.humidity;
-        countryObject.weather.pressure = response.data.main.pressure;
+    $.ajax({
+        url: './libs/php/getWeatherData.php',
+        type: 'get',
+        dataType: 'json',
+        data: {
+            lat: wLatitude,
+            lon: wLongitude,
+        },
+        success: function (response) {
+            countryObject.weather.Temperature = response.data.main.feels_like;
+            countryObject.weather.humidity = response.data.main.humidity;
+            countryObject.weather.pressure = response.data.main.pressure;
+
+            $('#temperatureModal').html(' Temperature:  ' + countryObject.weather.Temperature + ' &#8451;');
+            $('#humidityModal').html(' Humiditity:  ' + countryObject.weather.humidity + '%')
+            $('#pressureModal').html(' Pressure:  ' + countryObject.weather.pressure + 'Mb');
+            $('#ModalCenter').modal('show');
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(error, jqXHR, textStatus, errorThrown);
+        }
     })
-    .catch(function (error) {
-        console.log(error);
-    })
-    .then(function () {
-        $('#temperatureModal').html(' Temperature:  ' + countryObject.weather.Temperature + ' &#8451;');
-        $('#humidityModal').html(' Humiditity:  ' + countryObject.weather.humidity + '%')
-        $('#pressureModal').html(' Pressure:  ' + countryObject.weather.pressure + 'Mb');
-        $('#ModalCenter').modal('show');
-    });
-    CONVERT TO AJAX*/
 }
 //Trigger when a country is selected
 $(document).on('click', '.dropdown-item', function () {
@@ -178,9 +207,7 @@ $(document).on('click', '.dropdown-item', function () {
         $('#navbarDarkDropdownMenuLink').html(this.getAttribute("id"));
         countryObject.isoCode = this.getAttribute("value");
         loadCountryDataFromISO(countryObject.isoCode);
-        setTimeout(() => {
-            worldMap.flyTo([countryObject.latitude, countryObject.longitude], 4);
-        }, 600);
+
 
         //(Configure the model with the new data)
         $('#ModalCenter').modal('show');
@@ -191,7 +218,7 @@ $(document).ready(function () {
 
     //Updates the country list to choose from the countries.json
     handleCountryJSON();
-    console.log(getIsoFromCoords(user.latitude, user.longitude));
+    getIsoFromCoords(user.latitude, user.longitude);
     try {
         worldMap = L.map('mapid').setView([user.latitude, user.longitude], 5)
     }
@@ -199,7 +226,7 @@ $(document).ready(function () {
         console.log("oops");
     }
 
-    
+
 
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
         maxZoom: 14,
