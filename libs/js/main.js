@@ -30,6 +30,8 @@ var countryCode = "";
 
 //Instantiates the World Map
 var worldMap;
+//Globally declares current or initial geoJSON feature collection
+var currentFeature;
 
 //Requests location and updates the country Object
 if (!navigator.geolocation) {
@@ -144,11 +146,15 @@ function loadCountryDataFromISO(isoCode) {
         url: './libs/php/getCountryBorders.php',
         type: 'get',
         dataType: 'json',
+        data: {
+            iso: isoCode
+        },
 
         success: function (response) {
             $.each(response.data.features, function (i, item) {
                 if (response.data.features[i].properties.iso_a2 == isoCode) {
-                    L.geoJSON(layerGroup,
+                    currentFeature.clearLayers();
+                    currentFeature = L.geoJSON(response.data.features[i],
                         {
                             style: function (feature) {
                                 return {
@@ -162,7 +168,7 @@ function loadCountryDataFromISO(isoCode) {
                         }).addTo(worldMap)
                         setTimeout(() => {
                             worldMap.flyTo([countryObject.latitude, countryObject.longitude], 4);
-                        }, 1000);
+                        }, 500);
 
                 }
             }
@@ -218,6 +224,7 @@ $(document).ready(function () {
 
     //Updates the country list to choose from the countries.json
     handleCountryJSON();
+    //Acquire data on
     getIsoFromCoords(user.latitude, user.longitude);
     try {
         worldMap = L.map('mapid').setView([user.latitude, user.longitude], 5)
