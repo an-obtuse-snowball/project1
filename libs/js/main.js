@@ -135,6 +135,7 @@ function loadCountryDataFromISO(isoCode) {
             $('#currencyNameModal').html(' Currency:  ' + countryObject.currencyName + ' (' + countryObject.currencyCode + ')')
             $('#timezoneModal').html(' Time Zone:  ' + countryObject.timezone);
             callWeather(countryObject.latitude, countryObject.longitude);
+            worldMap.flyTo([countryObject.latitude, countryObject.longitude], 4);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
@@ -143,7 +144,7 @@ function loadCountryDataFromISO(isoCode) {
 
     $.ajax({
         //Pulls the list of borders, loops and filters through the JSON to find the same country with a matching ISO Code
-        url: './libs/php/getCountryBorders.php',
+        url: './libs/php/getSpecificCountry.php',
         type: 'get',
         dataType: 'json',
         data: {
@@ -151,11 +152,13 @@ function loadCountryDataFromISO(isoCode) {
         },
 
         success: function (response) {
-            console.log(response);
-            $.each(response.data.features, function (i, item) {
-                if (response.data.features[i].properties.iso_a2 == isoCode) {
-                    currentFeature.clearLayers();
-                    currentFeature = L.geoJSON(response.data.features[i],
+            if(currentFeature) {
+                console.log(currentFeature);
+                //clearBorder(response);
+            }
+
+                    //currentFeature.clearLayers();
+                    currentFeature = L.geoJSON(response.data,
                         {
                             style: function (feature) {
                                 return {
@@ -167,13 +170,8 @@ function loadCountryDataFromISO(isoCode) {
                         }).bindPopup(function (layer) {
                             return layer.feature.properties.description;
                         }).addTo(worldMap)
-                        setTimeout(() => {
-                            worldMap.flyTo([countryObject.latitude, countryObject.longitude], 4);
-                        }, 500);
 
-                }
-            }
-            )
+
         },
         error: function (jqXHR, textStatus, errorThrown) {
             //[Handle errors]
