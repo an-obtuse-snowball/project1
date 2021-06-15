@@ -153,8 +153,7 @@ function loadCountryDataFromISO(isoCode) {
 
         success: function (response) {
             if(currentFeature) {
-                console.log(currentFeature);
-                //clearBorder(response);
+                currentFeature.clearLayers();
             }
 
                     //currentFeature.clearLayers();
