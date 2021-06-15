@@ -151,6 +151,7 @@ function loadCountryDataFromISO(isoCode) {
         },
 
         success: function (response) {
+            console.log(response);
             $.each(response.data.features, function (i, item) {
                 if (response.data.features[i].properties.iso_a2 == isoCode) {
                     currentFeature.clearLayers();
