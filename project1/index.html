@@ -48,7 +48,7 @@
         <div class="modal-dialog modal-dialog fixed-center" role="document">
             <div class="modal-content" id="modalWindow">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Country Details</h5>
+                    <h5 class="modal-title" id="ModalLongTitle">Country Details</h5>
                 </div>
                 <div class="modal-body">
                     <table class="table table-hover ">
@@ -71,7 +71,7 @@
 
                                 <td class="align-left ">Population</td>
 
-                                <td id="populationModal " class="align-right "></td>
+                                <td id="populationModal" class="align-right ">yes</td>
 
                             </tr>
 
@@ -81,7 +81,7 @@
 
                                 <td class="align-left ">Currency</td>
 
-                                <td id="currencyNameModal " class="align-right "></td>
+                                <td id="currencyNameModal" class="align-right "></td>
 
                             </tr>
 
@@ -91,7 +91,7 @@
 
                                 <td class="align-left ">Timezones</td>
 
-                                <td id="timezoneModal " class="align-right "></td>
+                                <td id="timezoneModal" class="align-right "></td>
 
                             </tr>
 
@@ -115,7 +115,7 @@
 
                                 <td class="align-left ">City</td>
 
-                                <td id="capitalModal " class="align-right "></td>
+                                <td id="capitalModal" class="align-right "></td>
 
                             </tr>
 
@@ -127,7 +127,7 @@
 
                                 <td class="align-left ">Latitude</td>
 
-                                <td id="latitudeModal " class="align-right "></td>
+                                <td id="latitudeModal" class="align-right "></td>
 
                             </tr>
 
@@ -137,7 +137,7 @@
 
                                 <td class="align-left ">Longitude</td>
 
-                                <td id="longitudeModal " class="align-right "></td>
+                                <td id="longitudeModal" class="align-right "></td>
 
                             </tr>
 
@@ -147,41 +147,44 @@
 
                             <tr class="table-success ">
 
-                                <th colspan="3 " id="weatherTitle "></th>
+                                <th colspan="3 " id="weatherTitle ">Today's Weather</th>
 
                             </tr>
 
                         </thead>
 
                         <tbody>
+                            <tr>
+                                <td class="col-3">Test</td>
+                            </tr>
 
                             <tr>
 
                                 <th scope="row "><i class="bi bi-thermometer-half "></i></th>
 
-                                <td id="temperatureModal " class="align-left ">Temperature</td>
+                                <td id="temperatureModal" class="align-left ">Temperature</td>
 
-                                <td id="weatherDescription "></td>
+                                <td id="weatherDescription">1</td>
 
                             </tr>
 
                             <tr>
 
-                                <th scope="row "><i class="bi bi-arrow-left-right "></i></th>
+                                <th scope="row "><i class="bi bi-brightness-alt-high"></i></th>
 
                                 <td class="align-left ">Humidity</td>
 
-                                <td id="humidityModal " class="align-right "></td>
+                                <td id="humidityModal" class="align-right "></td>
 
                             </tr>
 
                             <tr>
 
-                                <th scope="row "><i class="bi bi-arrow-left-right "></i></th>
+                                <th scope="row "><i class="bi bi-arrows-collapse"></i></th>
 
                                 <td class="align-left ">Pressure</td>
 
-                                <td id="pressureModal " class="align-right "></td>
+                                <td id="pressureModal" class="align-right "></td>
 
                             </tr>
 
@@ -189,9 +192,20 @@
 
                                 <tr class="table-success ">
 
-                                    <th colspan="3 " id="forecast ">Upcoming Weather</th>
+                                    <th colspan="7" id="forecast">Upcoming Weather</th>
 
                                 </tr>
+                                <tr>
+                                    <td>Pressure</td>
+                                    <td class="col-1">Pressure</td>
+                                    <td class="col-1">Pressure</td>
+                                </tr>
+                                <tr>
+                                    <td class="col-1">Pressure</td>
+                                    <td class="col-1">Pressure</td>
+                                    <td class="col-1">Pressure</td>
+                                </tr>
+
 
                             </thead>
 
@@ -202,10 +216,10 @@
             </div>
         </div>
     </div>
-    <script src="libs/cdn/leaflet/leaflet.js"></script>
-    <script src="libs/cdn/jquery/jquery-3.6.0.js"></script>
-    <script src="libs/cdn/bootstrap/js/bootstrap.min.js"></script>
-    <script src="libs/js/main.js"></script>
+    <script src="libs/cdn/leaflet/leaflet.js "></script>
+    <script src="libs/cdn/jquery/jquery-3.6.0.js "></script>
+    <script src="libs/cdn/bootstrap/js/bootstrap.min.js "></script>
+    <script src="libs/js/main.js "></script>
 </body>
 
 </html>
