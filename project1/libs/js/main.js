@@ -1,4 +1,3 @@
-
 /* Instantiate the object with raw data*/
 countryObject = {
     countryName: "No Country known", //Replace with function to instantiate
@@ -63,12 +62,12 @@ function getIsoFromCoords(lat, long) {
             lat: lat,
             lng: long,
         },
-        success: function (response) {
+        success: function(response) {
             countryCode = response.data.countryCode;
 
             loadCountryDataFromISO(countryCode);
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
             console.log(textStatus, errorThrown);
         }
 
@@ -81,26 +80,26 @@ function handleCountryJSON() {
         url: "./libs/php/getCountryListings.php",
         type: "get",
         dataType: "json",
-        success: function (response) {
+        success: function(response) {
             //[Handle Success]
             var countryList = [];
-            $.each(response.data.features, function (i, item) {
-                
+            $.each(response.data.features, function(i, item) {
+
                 var country = {
                     countryCode: response.data.features[i].properties.iso_a2,
-                    countryName: response.data.features[i].properties.name 
+                    countryName: response.data.features[i].properties.name
                 };
                 countryList.push(country);
-                });
+            });
             countryList.sort((a, b) => (a.countryName > b.countryName) ? 1 : -1);
-                          
-            $.each(countryList, function (i, item) {
-                let listEntry = "<li><a class='dropdown-item' value = '" + countryList[i].countryCode + "' id = '" + countryList[i].countryName + "'>" + countryList[i].countryName + "</a><li>";
+
+            $.each(countryList, function(i, item) {
+                let listEntry = "<option class='dropdown-item' value = '" + countryList[i].countryCode + "' id = '" + countryList[i].countryName + "'>" + countryList[i].countryName + "</option>";
                 $("#dropdownList").append(listEntry);
             })
 
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
             //[Handle errors]
             console.log(error, jqXHR, textStatus, errrorThrown);
         }
@@ -117,7 +116,7 @@ function loadCountryDataFromISO(isoCode) {
         data: {
             countryISO: isoCode,
         },
-        success: function (response) {
+        success: function(response) {
             countryObject.countryName = response.data.name;
             countryObject.capitalName = response.data.capital;
             countryObject.latitude = response.data.latlng[0];
@@ -127,7 +126,7 @@ function loadCountryDataFromISO(isoCode) {
             countryObject.population = response.data.population;
             countryObject.timezone = response.data.timezones[0];
             countryObject.isoCode = response.data.alpha2Code;
-            $('#countryNameModal').html(' Country Name:  ' + countryObject.countryName);
+            $('#countryNameModal').html(countryObject.countryName);
             $('#capitalModal').html(' Capital:  ' + countryObject.capitalName);
             $('#latitudeModal').html(' Rough Latitude:  ' + countryObject.latitude);
             $('#longitudeModal').html(' Rough Longitude:  ' + countryObject.longitude);
@@ -135,51 +134,49 @@ function loadCountryDataFromISO(isoCode) {
             $('#currencyNameModal').html(' Currency:  ' + countryObject.currencyName + ' (' + countryObject.currencyCode + ')')
             $('#timezoneModal').html(' Time Zone:  ' + countryObject.timezone);
             callWeather(countryObject.latitude, countryObject.longitude);
+            worldMap.flyTo([countryObject.latitude, countryObject.longitude], 4);
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
         }
     })
 
     $.ajax({
         //Pulls the list of borders, loops and filters through the JSON to find the same country with a matching ISO Code
-        url: './libs/php/getCountryBorders.php',
+        url: './libs/php/getSpecificCountry.php',
         type: 'get',
         dataType: 'json',
         data: {
             iso: isoCode
         },
 
-        success: function (response) {
-            $.each(response.data.features, function (i, item) {
-                if (response.data.features[i].properties.iso_a2 == isoCode) {
-                    currentFeature.clearLayers();
-                    currentFeature = L.geoJSON(response.data.features[i],
-                        {
-                            style: function (feature) {
-                                return {
-                                    color: "#BCBCBC",
-                                    opacity: 1,
-
-                                };
-                            }
-                        }).bindPopup(function (layer) {
-                            return layer.feature.properties.description;
-                        }).addTo(worldMap)
-                        setTimeout(() => {
-                            worldMap.flyTo([countryObject.latitude, countryObject.longitude], 4);
-                        }, 500);
-
-                }
+        success: function(response) {
+            if (currentFeature) {
+                currentFeature.clearLayers();
             }
-            )
+
+            //currentFeature.clearLayers();
+            currentFeature = L.geoJSON(response.data, {
+                style: function(feature) {
+                    return {
+                        color: "#BCBCBC",
+                        opacity: 1,
+
+                    };
+                }
+            }).bindPopup(function(layer) {
+                return layer.feature.properties.description;
+            }).addTo(worldMap)
+
+
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
             //[Handle errors]
             console.log(error, jqXHR, textStatus, errorThrown);
         }
     })
 };
+
 function callWeather(wLatitude, wLongitude) {
     $.ajax({
         url: './libs/php/getWeatherData.php',
@@ -189,7 +186,7 @@ function callWeather(wLatitude, wLongitude) {
             lat: wLatitude,
             lon: wLongitude,
         },
-        success: function (response) {
+        success: function(response) {
             countryObject.weather.Temperature = response.data.main.feels_like;
             countryObject.weather.humidity = response.data.main.humidity;
             countryObject.weather.pressure = response.data.main.pressure;
@@ -199,17 +196,17 @@ function callWeather(wLatitude, wLongitude) {
             $('#pressureModal').html(' Pressure:  ' + countryObject.weather.pressure + 'Mb');
             $('#ModalCenter').modal('show');
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
             console.log(error, jqXHR, textStatus, errorThrown);
         }
     })
 }
 //Trigger when a country is selected
-$(document).on('click', '.dropdown-item', function () {
+/* Needs to be reconfigured to work for options
+$(document).on('change', '#dropdown-item', function() {
     if (this.getAttribute("value") == "null") {
         console.log("Unable to find country value when clicked");
-    }
-    else {
+    } else {
         $('#navbarDarkDropdownMenuLink').html(this.getAttribute("id"));
         countryObject.isoCode = this.getAttribute("value");
         loadCountryDataFromISO(countryObject.isoCode);
@@ -219,8 +216,9 @@ $(document).on('click', '.dropdown-item', function () {
         $('#ModalCenter').modal('show');
     }
 })
+*/
 
-$(document).ready(function () {
+$(document).ready(function() {
 
     //Updates the country list to choose from the countries.json
     handleCountryJSON();
@@ -228,8 +226,7 @@ $(document).ready(function () {
     getIsoFromCoords(user.latitude, user.longitude);
     try {
         worldMap = L.map('mapid').setView([user.latitude, user.longitude], 5)
-    }
-    catch (err) {
+    } catch (err) {
         console.log("oops");
     }
 

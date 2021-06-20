@@ -1,0 +1,30 @@
+body,
+#mapid {
+    position: relative;
+    height: 97vh;
+    z-index: 0;
+    overflow: hidden;
+}
+
+#dropdownList {
+    height: 3vh;
+    overflow: scroll;
+    overflow-x: hidden;
+    z-index: 5;
+}
+
+nav {
+    z-index: 5;
+}
+
+;
+#modalWindow {
+    background-color: #216529;
+}
+
+;
+#modalCenter {
+    position: absolute;
+    display: inline-block;
+    right: 0;
+}
