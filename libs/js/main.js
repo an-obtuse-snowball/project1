@@ -194,10 +194,12 @@ function callWeather(wLatitude, wLongitude) {
             countryObject.weather.Temperature = response.data.main.feels_like;
             countryObject.weather.humidity = response.data.main.humidity;
             countryObject.weather.pressure = response.data.main.pressure;
-
-            $('#temperatureModal').html(' Temperature:  ' + countryObject.weather.Temperature + ' &#8451;');
-            $('#humidityModal').html(' Humiditity:  ' + countryObject.weather.humidity + '%')
-            $('#pressureModal').html(' Pressure:  ' + countryObject.weather.pressure + 'Mb');
+            var url = 'http://openweathermap.org/img/wn/' + response.data.weather[0].icon + '@2x.png';
+            console.log(url);
+            $('#weatherTitle').html("Today's Weather");
+            $('#temperatureModal').html(countryObject.weather.Temperature + ' &#8451;');
+            $('#humidityModal').html(countryObject.weather.humidity + '%')
+            $('#pressureModal').html(countryObject.weather.pressure + 'Mb');
             $('#ModalCenter').modal('show');
         },
         error: function(jqXHR, textStatus, errorThrown) {
