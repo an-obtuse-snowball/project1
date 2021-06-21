@@ -211,9 +211,9 @@ function callWeather(wLatitude, wLongitude) {
             $('#tomorrow').html(dayNameTomorrow+ " "+(d.getDate()+1));
             $('#nextDay').html(dayNameNextDay+ " "+(d.getDate()+2));
 
-            $('#currentTemperature').html(response.data.daily[1].temp.max + ' &#8451;<br>'+response.data.daily[1].temp.min+' &#8451;');
-            $('#tomorrowsTemperature').html(response.data.daily[2].temp.max + ' &#8451;<br>'+response.data.daily[2].temp.min+' &#8451;');
-            $('#nextDayTemperature').html(response.data.daily[3].temp.max + ' &#8451;<br>'+response.data.daily[3].temp.min+' &#8451;');
+            $('#currentTemperature').html('<b>'+response.data.daily[1].temp.max + ' &#8451;</b><br>'+response.data.daily[1].temp.min+' &#8451;');
+            $('#tomorrowsTemperature').html('<b>'+response.data.daily[2].temp.max + ' &#8451;</b><br>'+response.data.daily[2].temp.min+' &#8451;');
+            $('#nextDayTemperature').html('<b>'+response.data.daily[3].temp.max + '  &#8451;</b><br>'+response.data.daily[3].temp.min+' &#8451;');
 
             
             //Pulls up the modal once all data has finally finished
