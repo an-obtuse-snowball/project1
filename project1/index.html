@@ -1,0 +1,212 @@
+<!doctype html5>
+
+<html lang="en">
+
+<head>
+    <title>The Gazeteer</title>
+    <meta name="description" content="The Gazeteer | IT Career Switch Project">
+    <meta name="referrer" content="origin">
+    <meta name="keywords" content="Gazeteer">
+    <meta name="author" content="Michael Snow">
+    <link rel="shortcut icon" type="image/jpg" href="https://img.icons8.com/office/16/000000/globe-earth.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="libs/cdn/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="libs/css/styles.css">
+    <link rel="stylesheet" href="libs/cdn/leaflet/leaflet.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/a5edfd8557.js" crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href=".">The Gazeteer</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                <select id="dropdownList" class="form-select form-select-sm " aria-label=".form-select-sm example ">
+                    <option></option>
+                </select>
+            </div>
+        </div>
+        <a href="# " id="reset " class="btn btn-primary btn-sm active " role="button " aria-pressed="true ">Return to current location</a>
+    </nav>
+    </div>
+
+    <div id="mapid"></div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" id="modalWindow">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLongTitle">Country Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover ">
+
+                            <thead>
+
+                                <tr class="table-primary ">
+
+                                    <th colspan="4 ">General Details</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+
+                                    <th scope="row " colspan="1"><i class="bi bi-person "></i> Population</th>
+                                    <td id="populationModal" colspan="2" class="align-left">1</td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <th scope="row " colspan="1"><i class="bi bi-cash-coin " colspan="2"></i> Currency</th>
+
+                                    <td id="currencyNameModal" class="align-center " colspan="2"></td>
+
+
+
+                                </tr>
+
+                                <tr>
+
+                                    <th scope="row" colspan="1"><i class="bi bi-clock " colspan="2"></i> Timezone</th>
+
+                                    <td id="timezoneModal" colspan="2" class="align-left">1</td>
+
+                                </tr>
+
+                            </tbody>
+
+                            <thead>
+
+                                <tr class=" table-secondary ">
+
+                                    <th colspan="4 ">Location Details</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+
+                                    <th scope="row" colspan="1"><i class="bi bi-building "></i> City</th>
+
+                                    <td id="capitalModal" colspan="2" class="align-left "></td>
+                                </tr>
+
+
+
+                                <tr>
+
+                                    <th scope="row " colspan="1"><i class="bi bi-arrow-down-up "></i> Geographical Location</th>
+
+                                    <td id="coordinatesModal" colspan="2" "></td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <th scope="row "><i class="bi bi-arrow-left-right "></i> Primary Language</th>
+
+                                    <td id="languageModal" colspan="2" class="align-right "></td>
+
+                                   
+
+                                </tr>
+
+                            </tbody>
+
+                            <thead>
+
+                                <tr class="table-success ">
+
+                                    <th colspan="3 " id="weatherTitle ">Today's Weather</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+                                
+                                <tr>
+                                    <th id="weatherIcon" scope="row" colspan="1">
+                                    </th>
+                                    <td  colspan="2"><h4 id="weatherDescription"></h4></td>
+
+                                </tr>
+                                
+                                <tr>
+
+                                    <td  class="align-right" scope="row" colspan="1" ><i class="bi bi-thermometer-half "></i>Current Temperature</th>
+                                    <td id="temperatureModal" colspan="2" class="align-left "></td>
+
+
+                                </tr>
+
+                                <tr>
+
+                                    <td id="humidityModal" class="border"scope="row " colspan="1"></td>
+                                    <td id="pressureModal" class="border"scope="row " colspan="1"></td>
+                                    <td id="windModal" class="border"scope="row " colspan="1"></td>
+
+                                </tr>
+
+                                <thead>
+
+                                    <tr class="table-success ">
+
+                                        <th colspan="7 " id="forecast ">Upcoming Weather</th>
+
+                                    </tr>
+                                    <tr>
+                                        <th id = "currentDay" colspan="1" scope="row" class="align-middle"></th>
+                                        <td id = "currentTemperature" colspan="3" class="align-right"></td>
+
+                                    </tr>
+                                    <tr>
+                                        <th id = "tomorrow" colspan="1" scope="row" class="align-middle"></th>
+                                        <td id = "tomorrowsTemperature" colspan="2" class="align-left"></td>
+
+                                    </tr>
+                                    <tr>
+                                        <th id = "nextDay" colspan="1" scope="row" class="align-middle"></th>
+                                        <td id = "nextDayTemperature" colspan="2" class="align-left"></td>
+                                    </tr>
+
+
+                                </thead>
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="libs/cdn/leaflet/leaflet.js "></script>
+    <script src="libs/cdn/jquery/jquery-3.6.0.js "></script>
+    <script src="libs/cdn/bootstrap/js/bootstrap.min.js "></script>
+    <script src="libs/js/main.js "></script>
+</body>
+
+</html>

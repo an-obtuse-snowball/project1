@@ -127,13 +127,13 @@ function loadCountryDataFromISO(isoCode) {
             countryObject.timezone = response.data.timezones;
 
             countryObject.isoCode = response.data.alpha2Code;
-            //$('#ModalLongTitle').html(countryObject.countryName);
-            $('#populationModal').html(response.data.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " people");
+            $('#ModalLongTitle').html(countryObject.countryName);
+            $('#populationModal').html(response.data.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#currencyNameModal').html(countryObject.currencyName + ' (' + countryObject.currencyCode + ')')
-            $('#timezoneModal').html(countryObject.timezone[0] + "ddddddddddddddddddd " + response.data.timezones[countryObject.timezone.length - 1]);
-            $('#capitalModal').html(countryObject.capitalName);
-            $('#latitudeModal').html(countryObject.latitude);
-            $('#longitudeModal').html(countryObject.longitude);
+            $('#timezoneModal').html(countryObject.timezone[0] + " to " + response.data.timezones[countryObject.timezone.length - 1]);
+            $('#capitalModal').html(countryObject.capitalName + ", " + isoCode);
+            $('#coordinatesModal').html(countryObject.latitude + " Latitude, " + countryObject.longitude + " Longitude");
+            $('#languageModal').html(response.data.languages[0].name);
 
 
 
@@ -183,7 +183,7 @@ function loadCountryDataFromISO(isoCode) {
 
 function callWeather(wLatitude, wLongitude) {
     $.ajax({
-        url: './libs/php/getWeatherData.php',
+        url: './libs/php/getForecast.php',
         type: 'get',
         dataType: 'json',
         data: {
@@ -191,15 +191,32 @@ function callWeather(wLatitude, wLongitude) {
             lon: wLongitude,
         },
         success: function(response) {
-            countryObject.weather.Temperature = response.data.main.feels_like;
-            countryObject.weather.humidity = response.data.main.humidity;
-            countryObject.weather.pressure = response.data.main.pressure;
-            var url = 'http://openweathermap.org/img/wn/' + response.data.weather[0].icon + '@2x.png';
+            var url = 'http://openweathermap.org/img/wn/' + response.data.current.weather[0].icon + '@2x.png';
             console.log(url);
             $('#weatherTitle').html("Today's Weather");
-            $('#temperatureModal').html(countryObject.weather.Temperature + ' &#8451;');
-            $('#humidityModal').html(countryObject.weather.humidity + '%')
-            $('#pressureModal').html(countryObject.weather.pressure + 'Mb');
+            $('#weatherIcon').html('<img src="'+url+'" />');
+            $('#weatherDescription').append(response.data.current.weather[0].main+"/"+response.data.current.weather[0].description);
+            $('#temperatureModal').html(response.data.daily[0].temp.min + ' &#8451;<br>'+response.data.daily[0].temp.max+' &#8451;');
+            $('#humidityModal').html('<i class="bi bi-droplet"></i> '+response.data.current.humidity + '% Humidity')
+            $('#pressureModal').html('<i class="bi bi-arrows-collapse"></i> '+response.data.current.pressure + 'Mb');
+            $('#windModal').html('<i class="bi bi-wind"></i> '+response.data.current.wind_speed + 'Mph');
+
+            //Loads the Forecast Data
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            var d = new Date();
+            dayName = days[d.getDay()];
+            dayNameTomorrow = days[d.getDay()+1];
+            dayNameNextDay = days[d.getDay()+2];
+            $('#currentDay').html(dayName+ " "+(d.getDate()));
+            $('#tomorrow').html(dayNameTomorrow+ " "+(d.getDate()+1));
+            $('#nextDay').html(dayNameNextDay+ " "+(d.getDate()+2));
+
+            $('#currentTemperature').html(response.data.daily[1].temp.max + ' &#8451;<br>'+response.data.daily[1].temp.min+' &#8451;');
+            $('#tomorrowsTemperature').html(response.data.daily[2].temp.max + ' &#8451;<br>'+response.data.daily[2].temp.min+' &#8451;');
+            $('#nextDayTemperature').html(response.data.daily[3].temp.max + ' &#8451;<br>'+response.data.daily[3].temp.min+' &#8451;');
+
+            
+            //Pulls up the modal once all data has finally finished
             $('#ModalCenter').modal('show');
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -223,10 +240,6 @@ $(document).on('change', '#dropdown-item', function() {
     }
 })
 */
-$("select".change(function() {
-    console.log("Test")
-}))
-
 
 $(document).ready(function() {
 
