@@ -18,11 +18,6 @@ nav {
 }
 
 ;
-#modalWindow {
-    background-color: #216529;
-}
-
-;
 #modalCenter {
     position: absolute;
     display: inline-block;

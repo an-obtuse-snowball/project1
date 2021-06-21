@@ -16,7 +16,7 @@ countryObject = {
         humidity: 0,
         pressure: 0
     },
-    timezone: "Unknown timezone",
+    timezone: [],
 
 };
 
@@ -124,17 +124,21 @@ function loadCountryDataFromISO(isoCode) {
             countryObject.currencyName = response.data.currencies[0].name;
             countryObject.currencyCode = response.data.currencies[0].code;
             countryObject.population = response.data.population;
-            countryObject.timezone = response.data.timezones[0];
+            countryObject.timezone = response.data.timezones;
+
             countryObject.isoCode = response.data.alpha2Code;
-            $('#countryNameModal').html(countryObject.countryName);
-            $('#capitalModal').html(' Capital:  ' + countryObject.capitalName);
-            $('#latitudeModal').html(' Rough Latitude:  ' + countryObject.latitude);
-            $('#longitudeModal').html(' Rough Longitude:  ' + countryObject.longitude);
-            $('#populationModal').html(' Population:  ' + countryObject.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-            $('#currencyNameModal').html(' Currency:  ' + countryObject.currencyName + ' (' + countryObject.currencyCode + ')')
-            $('#timezoneModal').html(' Time Zone:  ' + countryObject.timezone);
+            //$('#ModalLongTitle').html(countryObject.countryName);
+            $('#populationModal').html(response.data.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#currencyNameModal').html(countryObject.currencyName + ' (' + countryObject.currencyCode + ')')
+            $('#timezoneModal').html(countryObject.timezone[0] + " " + response.data.timezones[countryObject.timezone.length - 1]);
+            $('#capitalModal').html(countryObject.capitalName);
+            $('#latitudeModal').html(countryObject.latitude);
+            $('#longitudeModal').html(countryObject.longitude);
+
+
+
             callWeather(countryObject.latitude, countryObject.longitude);
-            worldMap.flyTo([countryObject.latitude, countryObject.longitude], 4);
+
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
@@ -167,7 +171,7 @@ function loadCountryDataFromISO(isoCode) {
             }).bindPopup(function(layer) {
                 return layer.feature.properties.description;
             }).addTo(worldMap)
-
+            worldMap.fitBounds(currentFeature.getBounds())
 
         },
         error: function(jqXHR, textStatus, errorThrown) {
