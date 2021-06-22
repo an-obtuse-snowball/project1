@@ -1,4 +1,3 @@
-
 /* Instantiate the object with raw data*/
 countryObject = {
     countryName: "No Country known", //Replace with function to instantiate
@@ -17,7 +16,7 @@ countryObject = {
         humidity: 0,
         pressure: 0
     },
-    timezone: "Unknown timezone",
+    timezone: [],
 
 };
 
@@ -63,12 +62,12 @@ function getIsoFromCoords(lat, long) {
             lat: lat,
             lng: long,
         },
-        success: function (response) {
+        success: function(response) {
             countryCode = response.data.countryCode;
 
             loadCountryDataFromISO(countryCode);
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
             console.log(textStatus, errorThrown);
         }
 
@@ -81,26 +80,26 @@ function handleCountryJSON() {
         url: "./libs/php/getCountryListings.php",
         type: "get",
         dataType: "json",
-        success: function (response) {
+        success: function(response) {
             //[Handle Success]
             var countryList = [];
-            $.each(response.data.features, function (i, item) {
-                
+            $.each(response.data.features, function(i, item) {
+
                 var country = {
                     countryCode: response.data.features[i].properties.iso_a2,
-                    countryName: response.data.features[i].properties.name 
+                    countryName: response.data.features[i].properties.name
                 };
                 countryList.push(country);
-                });
+            });
             countryList.sort((a, b) => (a.countryName > b.countryName) ? 1 : -1);
-                          
-            $.each(countryList, function (i, item) {
-                let listEntry = "<li><a class='dropdown-item' value = '" + countryList[i].countryCode + "' id = '" + countryList[i].countryName + "'>" + countryList[i].countryName + "</a><li>";
+
+            $.each(countryList, function(i, item) {
+                let listEntry = "<option class='dropdown-item' value = '" + countryList[i].countryCode + "' id = '" + countryList[i].countryName + "'>" + countryList[i].countryName + "</option>";
                 $("#dropdownList").append(listEntry);
             })
 
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
             //[Handle errors]
             console.log(error, jqXHR, textStatus, errrorThrown);
         }
@@ -117,7 +116,7 @@ function loadCountryDataFromISO(isoCode) {
         data: {
             countryISO: isoCode,
         },
-        success: function (response) {
+        success: function(response) {
             countryObject.countryName = response.data.name;
             countryObject.capitalName = response.data.capital;
             countryObject.latitude = response.data.latlng[0];
@@ -125,19 +124,22 @@ function loadCountryDataFromISO(isoCode) {
             countryObject.currencyName = response.data.currencies[0].name;
             countryObject.currencyCode = response.data.currencies[0].code;
             countryObject.population = response.data.population;
-            countryObject.timezone = response.data.timezones[0];
+            countryObject.timezone = response.data.timezones;
             countryObject.isoCode = response.data.alpha2Code;
-            $('#countryNameModal').html(' Country Name:  ' + countryObject.countryName);
-            $('#capitalModal').html(' Capital:  ' + countryObject.capitalName);
-            $('#latitudeModal').html(' Rough Latitude:  ' + countryObject.latitude);
-            $('#longitudeModal').html(' Rough Longitude:  ' + countryObject.longitude);
-            $('#populationModal').html(' Population:  ' + countryObject.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-            $('#currencyNameModal').html(' Currency:  ' + countryObject.currencyName + ' (' + countryObject.currencyCode + ')')
-            $('#timezoneModal').html(' Time Zone:  ' + countryObject.timezone);
+            $('#ModalLongTitle').html(countryObject.countryName);
+            $('#populationModal').html(response.data.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#currencyNameModal').html(countryObject.currencyName + ' (' + countryObject.currencyCode + ')')
+            $('#timezoneModal').html(countryObject.timezone[0] + " to " + response.data.timezones[countryObject.timezone.length - 1]);
+            $('#capitalModal').html(countryObject.capitalName + ", " + isoCode);
+            $('#areaModal').html(response.data.area.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" Km&sup2;");
+            $('#coordinatesModal').html(countryObject.latitude + " Latitude, " + countryObject.longitude + " Longitude");
+            $('#languageModal').html(response.data.languages[0].name);
+
+
             callWeather(countryObject.latitude, countryObject.longitude);
-            worldMap.flyTo([countryObject.latitude, countryObject.longitude], 4);
+
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
         }
     })
@@ -151,83 +153,117 @@ function loadCountryDataFromISO(isoCode) {
             iso: isoCode
         },
 
-        success: function (response) {
-            if(currentFeature) {
+        success: function(response) {
+            if (currentFeature) {
                 currentFeature.clearLayers();
             }
 
-                    //currentFeature.clearLayers();
-                    currentFeature = L.geoJSON(response.data,
-                        {
-                            style: function (feature) {
-                                return {
-                                    color: "#BCBCBC",
-                                    opacity: 1,
+            //currentFeature.clearLayers();
+            currentFeature = L.geoJSON(response.data, {
+                style: function(feature) {
+                    return {
+                        color: "#BCBCBC",
+                        opacity: 1,
 
-                                };
-                            }
-                        }).bindPopup(function (layer) {
-                            return layer.feature.properties.description;
-                        }).addTo(worldMap)
-
+                    };
+                }
+            }).bindPopup(function(layer) {
+                return layer.feature.properties.description;
+            }).addTo(worldMap)
+            worldMap.fitBounds(currentFeature.getBounds())
 
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
             //[Handle errors]
             console.log(error, jqXHR, textStatus, errorThrown);
         }
     })
 };
+
 function callWeather(wLatitude, wLongitude) {
     $.ajax({
-        url: './libs/php/getWeatherData.php',
+        url: './libs/php/getForecast.php',
         type: 'get',
         dataType: 'json',
         data: {
             lat: wLatitude,
             lon: wLongitude,
         },
-        success: function (response) {
-            countryObject.weather.Temperature = response.data.main.feels_like;
-            countryObject.weather.humidity = response.data.main.humidity;
-            countryObject.weather.pressure = response.data.main.pressure;
+        success: function(response) {
+            var url = 'https://openweathermap.org/img/wn/' + response.data.current.weather[0].icon + '@2x.png';
+            $('#weatherTitle').html("Todays weather in "+countryObject.capitalName+" is...");
+            $('#weatherIcon').html('<img src="'+url+'" />');
+            $('#weatherDescription').html(response.data.current.weather[0].main+"/"+response.data.current.weather[0].description);
+            $('#temperatureModal').html('<b>'+response.data.daily[0].temp.max + ' &#8451;</b><br>'+response.data.daily[0].temp.min+' &#8451;');
+            $('#humidityModal').html('<i class="bi bi-droplet"></i> '+response.data.current.humidity + '% Humidity')
+            $('#pressureModal').html('<i class="bi bi-arrows-collapse"></i> '+response.data.current.pressure + 'Mb');
+            $('#windModal').html('<i class="bi bi-wind"></i> '+response.data.current.wind_speed + 'Mph');
 
-            $('#temperatureModal').html(' Temperature:  ' + countryObject.weather.Temperature + ' &#8451;');
-            $('#humidityModal').html(' Humiditity:  ' + countryObject.weather.humidity + '%')
-            $('#pressureModal').html(' Pressure:  ' + countryObject.weather.pressure + 'Mb');
+            //Loads the Forecast Data
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            var d = new Date();
+            dayName = days[d.getDay()];
+            dayNameTomorrow = days[d.getDay()+1];
+            dayNameNextDay = days[d.getDay()+2];
+            $('#currentDay').html(dayName+ " "+(d.getDate()));
+            $('#tomorrow').html(dayNameTomorrow+ " "+(d.getDate()+1));
+            $('#nextDay').html(dayNameNextDay+ " "+(d.getDate()+2));
+
+            
+            var currentUrl = 'https://openweathermap.org/img/wn/' + response.data.daily[1].weather[0].icon + '@2x.png';
+            var tomorrowUrl = 'https://openweathermap.org/img/wn/' + response.data.daily[2].weather[0].icon + '@2x.png';
+            var nextDayURL = 'https://openweathermap.org/img/wn/' + response.data.daily[3].weather[0].icon + '@2x.png';
+            $('#currentWeatherIcon').html('<img src="'+currentUrl+'" />');
+            $('#currentTemperature').html('<b>'+response.data.daily[1].temp.max + ' &#8451;</b><br>'+response.data.daily[1].temp.min+' &#8451;');
+
+            $('#tomorrowWeatherIcon').html('<img src="'+nextDayURL+'" />');
+            $('#tomorrowsTemperature').html('<b>'+response.data.daily[2].temp.max + ' &#8451;</b><br>'+response.data.daily[2].temp.min+' &#8451;');
+
+
+            $('#nextDayWeatherIcon').html('<img src="'+url+'" />');
+            $('#nextDayTemperature').html('<b>'+response.data.daily[3].temp.max + '  &#8451;</b><br>'+response.data.daily[3].temp.min+' &#8451;');
+
+
+
+            
+            //Pulls up the modal once all data has finally finished
             $('#ModalCenter').modal('show');
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
             console.log(error, jqXHR, textStatus, errorThrown);
         }
     })
 }
 //Trigger when a country is selected
-$(document).on('click', '.dropdown-item', function () {
-    if (this.getAttribute("value") == "null") {
-        console.log("Unable to find country value when clicked");
-    }
-    else {
-        $('#navbarDarkDropdownMenuLink').html(this.getAttribute("id"));
-        countryObject.isoCode = this.getAttribute("value");
+// Needs to be reconfigured to work for options
+$('#dropdownList').change(function() {
+    if ($('#dropdownList').val()) {
+        $('#placeholder').val(countryObject.name);
+        countryObject.isoCode = $('#dropdownList').val();
         loadCountryDataFromISO(countryObject.isoCode);
-
-
+    } else {
+        console.log("Failed to acquire country code from select");
         //(Configure the model with the new data)
         $('#ModalCenter').modal('show');
     }
 })
 
-$(document).ready(function () {
+$('#reset').click(function() {
+    getIsoFromCoords(user.latitude, user.longitude);
+    });
 
+
+$(document).ready(function() {
     //Updates the country list to choose from the countries.json
     handleCountryJSON();
     //Acquire data on
     getIsoFromCoords(user.latitude, user.longitude);
+
+    //
+
     try {
         worldMap = L.map('mapid').setView([user.latitude, user.longitude], 5)
-    }
-    catch (err) {
+    } catch (err) {
         console.log("oops");
     }
 

@@ -1,0 +1,14 @@
+[21-Jun-2021 11:19:23 UTC] PHP Notice:  Undefined index: countryISO in /home/qxjf95fgxuhq/public_html/project1/libs/php/getCountryData.php on line 4
+[21-Jun-2021 11:19:23 UTC] PHP Notice:  Undefined index: iso in /home/qxjf95fgxuhq/public_html/project1/libs/php/getSpecificCountry.php on line 13
+[21-Jun-2021 13:09:11 UTC] PHP Notice:  Undefined index: iso in /home/qxjf95fgxuhq/public_html/project1/libs/php/getSpecificCountry.php on line 13
+[21-Jun-2021 13:09:11 UTC] PHP Notice:  Undefined index: countryISO in /home/qxjf95fgxuhq/public_html/project1/libs/php/getCountryData.php on line 4
+[21-Jun-2021 15:00:03 UTC] PHP Notice:  Undefined index: iso in /home/qxjf95fgxuhq/public_html/project1/libs/php/getSpecificCountry.php on line 13
+[21-Jun-2021 15:00:03 UTC] PHP Notice:  Undefined index: countryISO in /home/qxjf95fgxuhq/public_html/project1/libs/php/getCountryData.php on line 4
+[22-Jun-2021 08:48:12 UTC] PHP Notice:  Undefined index: iso in /home/qxjf95fgxuhq/public_html/project1/libs/php/getSpecificCountry.php on line 13
+[22-Jun-2021 08:48:13 UTC] PHP Notice:  Undefined index: countryISO in /home/qxjf95fgxuhq/public_html/project1/libs/php/getCountryData.php on line 4
+[22-Jun-2021 10:11:12 UTC] PHP Notice:  Undefined index: iso in /home/qxjf95fgxuhq/public_html/project1/libs/php/getSpecificCountry.php on line 13
+[22-Jun-2021 10:11:12 UTC] PHP Notice:  Undefined index: countryISO in /home/qxjf95fgxuhq/public_html/project1/libs/php/getCountryData.php on line 4
+[22-Jun-2021 10:58:46 UTC] PHP Notice:  Undefined index: countryISO in /home/qxjf95fgxuhq/public_html/project1/libs/php/getCountryData.php on line 4
+[22-Jun-2021 10:58:46 UTC] PHP Notice:  Undefined index: iso in /home/qxjf95fgxuhq/public_html/project1/libs/php/getSpecificCountry.php on line 13
+[22-Jun-2021 10:58:50 UTC] PHP Notice:  Undefined index: countryISO in /home/qxjf95fgxuhq/public_html/project1/libs/php/getCountryData.php on line 4
+[22-Jun-2021 10:58:50 UTC] PHP Notice:  Undefined index: iso in /home/qxjf95fgxuhq/public_html/project1/libs/php/getSpecificCountry.php on line 13
