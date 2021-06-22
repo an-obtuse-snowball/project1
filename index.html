@@ -26,15 +26,13 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+
             <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                 <select id="dropdownList" class="form-select form-select-sm " aria-label=".form-select-sm example ">
-
                     <option></option>
-
                 </select>
             </div>
         </div>
-
         <a href="# " id="reset " class="btn btn-primary btn-sm active " role="button " aria-pressed="true ">Return to current location</a>
     </nav>
     </div>
@@ -45,7 +43,7 @@
 
     <!-- Modal -->
     <div class="modal" id="ModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog fixed-center" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content" id="modalWindow">
                 <div class="modal-header">
                     <h5 class="modal-title" id="ModalLongTitle">Country Details</h5>
@@ -54,164 +52,153 @@
                       </button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-hover ">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover ">
 
-                        <thead>
+                            <thead>
 
-                            <tr class="table-primary ">
+                                <tr class="table-primary ">
 
-                                <th colspan="3 ">General Details</th>
+                                    <th colspan="4 ">General Details</th>
 
-                            </tr>
+                                </tr>
 
-                        </thead>
+                            </thead>
 
-                        <tbody>
+                            <tbody>
 
-                            <tr>
+                                <tr>
 
-                                <th scope="row "><i class="bi bi-person "></i></th>
+                                    <th scope="row " colspan="1"><i class="bi bi-person "></i> Population</th>
+                                    <td id="populationModal" colspan="2" class="align-left">1</td>
 
-                                <td class="align-left ">Population</td>
+                                </tr>
 
-                                <td id="populationModal" class="align-right ">yes</td>
+                                <tr>
 
-                            </tr>
+                                    <th scope="row " colspan="1"><i class="bi bi-cash-coin " colspan="2"></i> Currency</th>
 
-                            <tr>
+                                    <td id="currencyNameModal" class="align-center " colspan="2"></td>
 
-                                <th scope="row "><i class="bi bi-cash-coin "></i></th>
 
-                                <td class="align-left ">Currency</td>
 
-                                <td id="currencyNameModal" class="align-right "></td>
+                                </tr>
 
-                            </tr>
+                                <tr>
 
-                            <tr>
+                                    <th scope="row" colspan="1"><i class="bi bi-clock " colspan="2"></i> Timezone</th>
 
-                                <th scope="row"><i class="bi bi-clock "></i></th>
+                                    <td id="timezoneModal" colspan="2" class="align-left">1</td>
 
-                                <td class="align-left ">Timezones</td>
+                                </tr>
 
-                                <td id="timezoneModal" class="align-right "></td>
+                            </tbody>
 
-                            </tr>
+                            <thead>
 
-                        </tbody>
+                                <tr class=" table-secondary ">
 
-                        <thead>
+                                    <th colspan="4 ">Location Details</th>
 
-                            <tr class="table-secondary ">
+                                </tr>
 
-                                <th colspan="3 ">Location Details</th>
+                            </thead>
 
-                            </tr>
+                            <tbody>
 
-                        </thead>
+                                <tr>
 
-                        <tbody>
+                                    <th scope="row" colspan="1"><i class="bi bi-building "></i> City</th>
 
-                            <tr>
+                                    <td id="capitalModal" colspan="2" class="align-left "></td>
+                                </tr>
 
-                                <th scope="row "><i class="bi bi-building "></i></th>
 
-                                <td class="align-left ">City</td>
 
-                                <td id="capitalModal" class="align-right "></td>
+                                <tr>
 
-                            </tr>
+                                    <th scope="row " colspan="1"><i class="bi bi-arrow-down-up "></i> Geographical Location</th>
 
+                                    <td id="coordinatesModal" colspan="2" "></td>
 
+                                </tr>
 
-                            <tr>
+                                <tr>
 
-                                <th scope="row "><i class="bi bi-arrow-down-up "></i></th>
+                                    <th scope="row "><i class="bi bi-arrow-left-right "></i> Primary Language</th>
 
-                                <td class="align-left ">Latitude</td>
+                                    <td id="languageModal" colspan="2" class="align-right "></td>
 
-                                <td id="latitudeModal" class="align-right "></td>
+                                   
 
-                            </tr>
+                                </tr>
 
-                            <tr>
-
-                                <th scope="row "><i class="bi bi-arrow-left-right "></i></th>
-
-                                <td class="align-left ">Longitude</td>
-
-                                <td id="longitudeModal" class="align-right "></td>
-
-                            </tr>
-
-                        </tbody>
-
-                        <thead>
-
-                            <tr class="table-success ">
-
-                                <th colspan="3 " id="weatherTitle ">Today's Weather</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-
-                                <th scope="row "><i class="bi bi-thermometer-half "></i></th>
-
-                                <td id="temperatureModal" class="align-left ">Temperature</td>
-
-                                <td id="weatherDescription">1</td>
-
-                            </tr>
-
-                            <tr>
-
-                                <th scope="row "><i class="bi bi-brightness-alt-high"></i></th>
-
-                                <td class="align-left ">Humidity</td>
-
-                                <td id="humidityModal" class="align-right "></td>
-
-                            </tr>
-
-                            <tr>
-
-                                <th scope="row "><i class="bi bi-arrows-collapse"></i></th>
-
-                                <td class="align-left ">Pressure</td>
-
-                                <td id="pressureModal" class="align-right "></td>
-
-                            </tr>
+                            </tbody>
 
                             <thead>
 
                                 <tr class="table-success ">
 
-                                    <th colspan="7" id="forecast">Upcoming Weather</th>
+                                    <th colspan="3 " id="weatherTitle ">Today's Weather</th>
 
                                 </tr>
-                                <tr>
-                                    <td class="col-1">Tomorrow</td>
-                                    <td class="col-1">The day after</td>
-                                    <td class="col-1">The day after after</td>
-                                </tr>
-                                <tr>
-                                    <td class="col-1"></td>
-                                    <td class="col-1"></td>
-                                    <td class="col-1"></td>
-                                </tr>
-
 
                             </thead>
 
-                        </tbody>
+                            <tbody>
+                                
+                                <tr>
+                                    <th id="weatherIcon" scope="row" colspan="1">
+                                    </th>
+                                    <td  colspan="2"><h4 id="weatherDescription"></h4></td>
 
-                    </table>
+                                </tr>
+                                
+                                <tr>
+
+                                    <td  class="align-right" scope="row" colspan="1" ><i class="bi bi-thermometer-half "></i>Current Temperature</th>
+                                    <td id="temperatureModal" colspan="2" class="align-left "></td>
+
+
+                                </tr>
+
+                                <tr>
+
+                                    <td id="humidityModal" class="border"scope="row " colspan="1"></td>
+                                    <td id="pressureModal" class="border"scope="row " colspan="1"></td>
+                                    <td id="windModal" class="border"scope="row " colspan="1"></td>
+
+                                </tr>
+
+                                <thead>
+
+                                    <tr class="table-success ">
+
+                                        <th colspan="7 " id="forecast ">Upcoming Weather</th>
+
+                                    </tr>
+                                    <tr>
+                                        <th id = "currentDay" colspan="1" scope="row" class="align-middle"></th>
+                                        <td id = "currentTemperature" colspan="3" class="align-right"></td>
+
+                                    </tr>
+                                    <tr>
+                                        <th id = "tomorrow" colspan="1" scope="row" class="align-middle"></th>
+                                        <td id = "tomorrowsTemperature" colspan="2" class="align-left"></td>
+
+                                    </tr>
+                                    <tr>
+                                        <th id = "nextDay" colspan="1" scope="row" class="align-middle"></th>
+                                        <td id = "nextDayTemperature" colspan="2" class="align-left"></td>
+                                    </tr>
+
+
+                                </thead>
+
+                            </tbody>
+
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

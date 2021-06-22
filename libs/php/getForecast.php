@@ -10,7 +10,7 @@ $lon = $_REQUEST['lon'];
 
 
 
-$url = 'https://api.openweathermap.org/data/2.5/onecall?lat='. $lat . '&lon=' . $lon . '&exclude={part}&appid=442d9c285ccba223632883d70318b93c';
+$url = 'https://api.openweathermap.org/data/2.5/onecall?lat='. $lat . '&lon=' . $lon . '&units=metric&exclude={part}&appid=442d9c285ccba223632883d70318b93c';
 
 
 
