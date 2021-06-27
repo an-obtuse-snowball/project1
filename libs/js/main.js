@@ -29,7 +29,7 @@ var countryCode = "";
 var capital;
 var countryMarkers = L.markerClusterGroup({
 	iconCreateFunction: function(cluster) {
-		return L.divIcon({ html: '<i class="fas fa-map-marked-alt"></i>' });
+		return L.divIcon({ html: '<b>' + cluster.getChildCount() + '</b>' });
 	},
 });
 var userPin = L.ExtraMarkers.icon({
@@ -287,6 +287,7 @@ function callMapData(cityName) {
 
 function generatePoints(latitude, longitude) {
 
+
     $.ajax({
         url: './libs/php/getAttractions.php',
         type: 'get',
@@ -302,7 +303,8 @@ function generatePoints(latitude, longitude) {
                 countryMarkers.addLayer((L.marker([response.data[i].point.lat,response.data[i].point.lon], {icon: attractionMarker}).bindPopup(
                     response.data[i].name + "<br> ("+response.data[i].point.lat+ ","+response.data[i].point.lon+")")));
             }
-            countryMarkers.addLayer((L.marker([latitude,longitude], {icon:capitalMarker}).bindPopup(countryObject.capitalName)));
+            capitalCityMarker = L.marker([latitude,longitude], {icon:capitalMarker}).bindPopup(countryObject.capitalName);
+            capitalCityMarker.addTo(worldMap);
             worldMap.addLayer(countryMarkers);
            
             },
