@@ -17,15 +17,41 @@ countryObject = {
         pressure: 0
     },
     timezone: [],
-
 };
 
 user = {
     latitude: "",
     longitude: "",
 }
-
 var countryCode = "";
+
+//Marker related variables
+var capital;
+var countryMarkers = L.markerClusterGroup({
+	iconCreateFunction: function(cluster) {
+		return L.divIcon({ html: '<i class="fas fa-map-marked-alt"></i>' });
+	},
+});
+var userPin = L.ExtraMarkers.icon({
+    icon: 'fa-home',
+    markerColor: 'green',
+    shape: 'square',
+    prefix: 'fa'
+  });
+  var capitalMarker = L.ExtraMarkers.icon({
+    icon: 'fa-building',
+    markerColor: 'black',
+    shape: 'star',
+    prefix: 'fa'
+  });
+  var attractionMarker = L.ExtraMarkers.icon({
+    icon: 'fa-map-signs',
+    title: "Jack",
+    markerColor: 'black',
+    shape: 'triangle',
+    prefix: 'fa', 
+  });
+  var cityLat, cityLng, capitalCityMarker;
 
 //Instantiates the World Map
 var worldMap;
@@ -108,7 +134,7 @@ function handleCountryJSON() {
 
 //Loads data from restCountries, countryborders and WeatherMaps APIs
 function loadCountryDataFromISO(isoCode) {
-
+    countryMarkers.clearLayers();
     $.ajax({
         url: './libs/php/getCountryData.php',
         type: "get",
@@ -118,6 +144,7 @@ function loadCountryDataFromISO(isoCode) {
         },
         success: function(response) {
             countryObject.countryName = response.data.name;
+            $('#defaultOption').html(countryObject.countryName);
             countryObject.capitalName = response.data.capital;
             countryObject.latitude = response.data.latlng[0];
             countryObject.longitude = response.data.latlng[1];
@@ -132,11 +159,10 @@ function loadCountryDataFromISO(isoCode) {
             $('#timezoneModal').html(countryObject.timezone[0] + " to " + response.data.timezones[countryObject.timezone.length - 1]);
             $('#capitalModal').html(countryObject.capitalName + ", " + isoCode);
             $('#areaModal').html(response.data.area.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" Km&sup2;");
-            $('#coordinatesModal').html(countryObject.latitude + " Latitude, " + countryObject.longitude + " Longitude");
             $('#languageModal').html(response.data.languages[0].name);
 
 
-            callWeather(countryObject.latitude, countryObject.longitude);
+            callMapData(countryObject.capitalName);
 
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -162,7 +188,7 @@ function loadCountryDataFromISO(isoCode) {
             currentFeature = L.geoJSON(response.data, {
                 style: function(feature) {
                     return {
-                        color: "#BCBCBC",
+                        color: "#45bbff",
                         opacity: 1,
 
                     };
@@ -181,6 +207,7 @@ function loadCountryDataFromISO(isoCode) {
 };
 
 function callWeather(wLatitude, wLongitude) {
+                $('#coordinatesModal').html(countryObject.latitude + " Latitude, " + countryObject.longitude + " Longitude");
     $.ajax({
         url: './libs/php/getForecast.php',
         type: 'get',
@@ -191,7 +218,7 @@ function callWeather(wLatitude, wLongitude) {
         },
         success: function(response) {
             var url = 'https://openweathermap.org/img/wn/' + response.data.current.weather[0].icon + '@2x.png';
-            $('#weatherTitle').html("Todays weather in "+countryObject.capitalName+" is...");
+            $('#coordinatesModal').html((Math.round(wLatitude*100)/100) + " Latitude<br> " + (Math.round(wLongitude*100)/100) + " Longitude");
             $('#weatherIcon').html('<img src="'+url+'" />');
             $('#weatherDescription').html(response.data.current.weather[0].main+"/"+response.data.current.weather[0].description);
             $('#temperatureModal').html('<b>'+response.data.daily[0].temp.max + ' &#8451;</b><br>'+response.data.daily[0].temp.min+' &#8451;');
@@ -234,6 +261,60 @@ function callWeather(wLatitude, wLongitude) {
         }
     })
 }
+
+function callMapData(cityName) {
+
+        var cityLat, cityLng;
+        //Acquire the capital city's exact Lat/Long
+        $.ajax({
+            url: './libs/php/getCity.php',
+            type: 'get',
+            dataType: 'json',
+            data: {
+                city: cityName
+            },
+        success: function(response) {
+            cityLat = response.data.latitude;
+            cityLng = response.data.longitude;
+            callWeather(cityLat, cityLng);
+            generatePoints(cityLat, cityLng);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            //[Handle errors]
+            console.log(error, jqXHR, textStatus, errorThrown);
+        }
+    });
+
+function generatePoints(latitude, longitude) {
+
+    $.ajax({
+        url: './libs/php/getAttractions.php',
+        type: 'get',
+        dataType: 'json',
+        data: {
+            lat: latitude,
+            lng: longitude,
+        },
+
+        success: function(response) {
+            console.log(response);
+            for(i=0;i<response.data.length; i++) {
+                countryMarkers.addLayer((L.marker([response.data[i].point.lat,response.data[i].point.lon], {icon: attractionMarker}).bindPopup(
+                    response.data[i].name + "<br> ("+response.data[i].point.lat+ ","+response.data[i].point.lon+")")));
+            }
+            countryMarkers.addLayer((L.marker([latitude,longitude], {icon:capitalMarker}).bindPopup(countryObject.capitalName)));
+            worldMap.addLayer(countryMarkers);
+           
+            },
+        error: function(jqXHR, textStatus, errorThrown) {
+            //[Handle errors]
+            console.log(error, jqXHR, textStatus, errorThrown);
+        }
+    })
+    
+    };
+}
+
 //Trigger when a country is selected
 // Needs to be reconfigured to work for options
 $('#dropdownList').change(function() {
@@ -242,15 +323,14 @@ $('#dropdownList').change(function() {
         countryObject.isoCode = $('#dropdownList').val();
         loadCountryDataFromISO(countryObject.isoCode);
     } else {
-        console.log("Failed to acquire country code from select");
+        console.log("Failed to acquire country code - OnChange #dropdownList");
         //(Configure the model with the new data)
         $('#ModalCenter').modal('show');
     }
 })
-
-$('#reset').click(function() {
-    getIsoFromCoords(user.latitude, user.longitude);
-    });
+$('#closeModal').click(function() {
+    $('#ModalCenter').modal('hide');
+})
 
 
 $(document).ready(function() {
@@ -259,6 +339,8 @@ $(document).ready(function() {
     //Acquire data on
     getIsoFromCoords(user.latitude, user.longitude);
 
+
+
     //
 
     try {
@@ -266,16 +348,70 @@ $(document).ready(function() {
     } catch (err) {
         console.log("oops");
     }
+    var streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', 
+        {
+            id: 'mapbox/streets-v11',
+            maxZoom: 14,
+            tileSize: 512,
+            setView: true,
+            zoomOffset: -1, 
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>'
+        }),
+    satellite   = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', 
+        {
+            id: 'mapbox/satellite-v9', 
+            maxZoom: 14,
+            tileSize: 512,
+            setView: true,
+            zoomOffset: -1, 
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>'
+        }),
 
+    dark   = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', 
+            {
+                id: 'mapbox/dark-v10', 
+                maxZoom: 14,
+                tileSize: 512,
+                setView: true,
+                zoomOffset: -1, 
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+                'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>'
+            });
+    night   = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', 
+            {
+                id: 'mapbox/navigation-night-v1', 
+                maxZoom: 14,
+                tileSize: 512,
+                setView: true,
+                zoomOffset: -1, 
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+                'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>'
+            });
 
+    var baseMaps = {
+        "Street View": streets,
+        "Satellite": satellite,
+        "Dark Mode": dark,
+        "Night Mode": night
+    }
+
+    L.control.layers(baseMaps).addTo(worldMap);
 
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
         maxZoom: 14,
         setView: true,
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
             'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        id: 'mapbox/dark-v10',
+        id: 'mapbox/streets-v11',
         tileSize: 512,
         zoomOffset: -1
     }).addTo(worldMap);
+    L.marker([user.latitude, user.longitude], {icon: userPin}).addTo(worldMap);
+
+
+    L.easyButton('bi bi-geo-fill', function() {
+        getIsoFromCoords(user.latitude, user.longitude);
+    }, 'Return to your current location').addTo(worldMap);
 });

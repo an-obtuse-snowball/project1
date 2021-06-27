@@ -3,17 +3,21 @@
 <html lang="en">
 
 <head>
-    <title>The Gazeteer</title>
+    <title>The Gazetteer</title>
     <meta charset="UTF-8">
-    <meta name="description" content="The Gazeteer | IT Career Switch Project">
+    <meta name="description" content="The Gazetteer | IT Career Switch Project">
     <meta name="referrer" content="origin">
-    <meta name="keywords" content="Gazeteer">
+    <meta name="keywords" content="Gazetteer">
     <meta name="author" content="Michael Snow">
     <link rel="shortcut icon" type="image/jpg" href="https://img.icons8.com/office/16/000000/globe-earth.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <link rel="stylesheet" href="libs/cdn/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="libs/css/styles.css">
     <link rel="stylesheet" href="libs/cdn/leaflet/leaflet.css">
+    <link rel="stylesheet" href="libs/cdn/easybuttons/easy-button.css">
+    <link rel="stylesheet" href="libs/cdn/markercluster/MarkerCluster.css">
+    <link rel="stylesheet" href="libs/cdn/extramarkers/leaflet.extra-markers.min.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <script src="https://kit.fontawesome.com/a5edfd8557.js" crossorigin="anonymous"></script>
 
@@ -21,32 +25,18 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href=".">The Gazeteer</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
-                <select id="dropdownList" class="form-select form-select-sm " aria-label=".form-select-sm example">
-                    <option class="dropdown-item" id="placeholder">Select a country</option>
-                </select>
-            </div>
-        </div>
-        <a href="#" id="reset" class="btn btn-primary btn-sm active" role="button" aria-pressed="true"><i class="bi bi-geo-fill"></i>Return to your location</a>
-    </nav>
-
-    <div id="mapid"></div>
-
-
-    <!-- Modal -->
+    <nav class="navbar navbar-dark bg-dark">
+        <select id="dropdownList" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+            <option id="defaultOption" selected>Choose a country</option>
+        </select>
+      </nav>
+    <!-- Modal PC -->
     <div class="modal" id="ModalCenter" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content" id="modalWindow">
                 <div class="modal-header">
                     <h5 class="modal-title justify-content-center" id="ModalLongTitle">Country Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" id="closeModal" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                 </div>
@@ -77,14 +67,14 @@
 
                                     <th scope="row" colspan="2"><i class="bi bi-translate"></i> Primary Language</th>
 
-                                    <td id="languageModal" colspan="2" class="align-right"></td>
+                                    <td id="languageModal" colspan="1"" class="align-right"></td>
 
                                 </tr>
                                 <tr>
 
                                     <th scope="row" colspan="2"><i class="bi bi-cash-coin"></i> Currency</th>
 
-                                    <td id="currencyNameModal" class="align-center" colspan="2"></td>
+                                    <td id="currencyNameModal" class="align-center" colspan="1"></td>
 
                                 </tr>
 
@@ -92,14 +82,14 @@
 
                                     <th scope="row" colspan="2"><i class="bi bi-clock" ></i> Timezones</th>
 
-                                    <td id="timezoneModal" colspan="2" class="align-left">1</td>
+                                    <td id="timezoneModal" colspan="1" class="align-left"></td>
 
                                 </tr>
                                 <tr>
 
                                     <th scope="row" colspan="2"><i class="bi bi-border-all"></i> Area Size</th>
 
-                                    <td id="areaModal" colspan="2" class="align-left"></td>
+                                    <td id="areaModal" colspan="1" class="align-left"></td>
                                 </tr>
 
 
@@ -108,7 +98,7 @@
 
                                 <tr class=" table-secondary">
 
-                                    <th  colspan="4">Capital Details</th>
+                                    <th  colspan="3">Capital Details</th>
 
                                 </tr>
 
@@ -118,7 +108,7 @@
 
                                     <th scope="row" colspan="2"><i class="bi bi-building"></i> Capital city</th>
 
-                                    <td id="capitalModal" colspan="2" class="align-left"></td>
+                                    <td id="capitalModal" colspan="1" class="align-left"></td>
                                 </tr>
 
                                 
@@ -130,7 +120,7 @@
 
                                     <th scope="row" colspan="2"><i class="bi bi-geo-alt"></i> Geographical Location</th>
 
-                                    <td id="coordinatesModal" colspan="2"></td>
+                                    <td id="coordinatesModal" colspan="1"></td>
 
                                 </tr>
 
@@ -139,7 +129,7 @@
 
                                 <tr class="table-success ">
 
-                                    <th colspan="4" id="weatherTitle">Today's Weather</th>
+                                    <th colspan="3" id="weatherTitle">Today's Weather</th>
 
                                 </tr>
 
@@ -148,13 +138,13 @@
                                 <tr>
                                     <th id="weatherIcon" scope="row" colspan="1"></th>
                                     
-                                    <td  colspan="3"><h4 id="weatherDescription">Unknown</h4></td>
+                                    <td  colspan="2"><h4 id="weatherDescription">Unknown</h4></td>
 
                                 </tr>
                                 
                                 <tr>
 
-                                    <td  class="align-right" colspan="2" ><i class="bi bi-thermometer-half "></i>Current Temperature</td>
+                                    <td  class="align-right" colspan="1" ><i class="bi bi-thermometer-half "></i>Current Temperature</td>
                                     <td id="temperatureModal" colspan="2" class="align-left"></td>
 
 
@@ -164,7 +154,7 @@
 
                                     <td id="humidityModal" class="border" colspan="1"></td>
                                     <td id="pressureModal" class="border" colspan="1"></td>
-                                    <td id="windModal" class="border" colspan="2"></td>
+                                    <td id="windModal" class="border" colspan="1"></td>
 
                                 </tr>
                             </tbody>
@@ -177,19 +167,19 @@
 
                                     </tr>
                                     <tr>
-                                        <th id = "currentDay" colspan="2" scope="row" class="align-middle"></th>
+                                        <th id = "currentDay" colspan="1" scope="row" class="align-middle"></th>
                                         <td id = "currentWeatherIcon" colspan="1" class="align-middle"></td>
                                         <td id = "currentTemperature" colspan="1" class="align-middle"></td>
 
                                     </tr>
                                     <tr>
-                                        <th id = "tomorrow" scope="row" colspan="2"  class="align-middle"></th>
+                                        <th id = "tomorrow" scope="row" colspan="1"  class="align-middle"></th>
                                         <td id = "tomorrowWeatherIcon" colspan="1" class="align-middle"></td>
                                         <td id = "tomorrowsTemperature" colspan="1" class="align-middle"></td>
 
                                     </tr>
                                     <tr>
-                                        <th id = "nextDay" scope="row" colspan="2" class="align-middle"></th>
+                                        <th id = "nextDay" scope="row" colspan="1" class="align-middle"></th>
                                         <td id = "nextDayWeatherIcon" colspan="1" class="align-middle"></td>
                                         <td id = "nextDayTemperature" colspan="1" class="align-middle"></td>
                                     </tr>
@@ -205,8 +195,14 @@
             </div>
         </div>
     </div>
+    
+    <div id="mapid"></div>
+
     <script src="libs/cdn/leaflet/leaflet.js "></script>
     <script src="libs/cdn/jquery/jquery-3.6.0.js "></script>
+    <script src="libs/cdn/easybuttons/easy-button.js"></script>
+    <script src="libs/cdn/extramarkers/leaflet.extra-markers.min.js"></script>
+    <script src="libs/cdn/markercluster/leaflet.markercluster.js"></script>
     <script src="libs/cdn/bootstrap/js/bootstrap.min.js "></script>
     <script src="libs/js/main.js "></script>
 </body>
