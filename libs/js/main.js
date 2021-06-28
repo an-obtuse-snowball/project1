@@ -420,7 +420,7 @@ $(document).ready(function() {
         tileSize: 512,
         zoomOffset: -1
     }).addTo(worldMap);
-    L.marker([user.latitude, user.longitude], {icon: userPin}).addTo(worldMap);
+    L.marker([user.latitude, user.longitude], {icon: userPin}).bindPopup("Current location").addTo(worldMap);
 
 
     L.easyButton('bi bi-geo-fill', function() {
