@@ -3,7 +3,6 @@
 	-moz-transition: -moz-transform 0.3s ease-out, opacity 0.3s ease-in;
 	-o-transition: -o-transform 0.3s ease-out, opacity 0.3s ease-in;
 	transition: transform 0.3s ease-out, opacity 0.3s ease-in;
-    height: 20vh;
 }
 
 .leaflet-cluster-spider-leg {

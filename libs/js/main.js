@@ -46,10 +46,15 @@ var userPin = L.ExtraMarkers.icon({
   });
   var attractionMarker = L.ExtraMarkers.icon({
     icon: 'fa-map-signs',
-    title: "Jack",
     markerColor: 'black',
     shape: 'triangle',
     prefix: 'fa', 
+  });
+var monumentMarker = L.ExtraMarkers.icon({
+        icon: 'fa-archway',
+        markerColor: 'yellow',
+        shape: 'circle',
+        prefix: 'fa', 
   });
   var cityLat, cityLng, capitalCityMarker;
 
@@ -77,7 +82,11 @@ function success(pos) {
 }
 
 function error() {
-    console.log("Failed to get geolocation from device");
+    try {
+    worldMap.locate();
+} catch {
+    console("Geolocation unavailable after navigator attempt/locate attempt")
+}
 }
 //Functions for acquiring data
 function getIsoFromCoords(lat, long) {
@@ -236,7 +245,6 @@ function callWeather(wLatitude, wLongitude) {
             $('#tomorrow').html(dayNameTomorrow+ " "+(d.getDate()+1));
             $('#nextDay').html(dayNameNextDay+ " "+(d.getDate()+2));
 
-            
             var currentUrl = 'https://openweathermap.org/img/wn/' + response.data.daily[1].weather[0].icon + '@2x.png';
             var tomorrowUrl = 'https://openweathermap.org/img/wn/' + response.data.daily[2].weather[0].icon + '@2x.png';
             var nextDayURL = 'https://openweathermap.org/img/wn/' + response.data.daily[3].weather[0].icon + '@2x.png';
@@ -284,7 +292,7 @@ function callMapData(cityName) {
             console.log(error, jqXHR, textStatus, errorThrown);
         }
     });
-
+}
 function generatePoints(latitude, longitude) {
 
 
@@ -298,24 +306,25 @@ function generatePoints(latitude, longitude) {
         },
 
         success: function(response) {
-            console.log(response);
             for(i=0;i<response.data.length; i++) {
-                countryMarkers.addLayer((L.marker([response.data[i].point.lat,response.data[i].point.lon], {icon: attractionMarker}).bindPopup(
-                    response.data[i].name + "<br> ("+response.data[i].point.lat+ ","+response.data[i].point.lon+")")));
+                if(~response.data[i].name.indexOf("Museum")) {
+                    countryMarkers.addLayer((L.marker([response.data[i].point.lat,response.data[i].point.lon], {icon: monumentMarker}).bindPopup(
+                        response.data[i].name + "<br> ("+response.data[i].point.lat+ ","+response.data[i].point.lon+")")));
+                } else {
+                    countryMarkers.addLayer((L.marker([response.data[i].point.lat,response.data[i].point.lon], {icon: attractionMarker}).bindPopup(
+                        response.data[i].name + "<br> ("+response.data[i].point.lat+ ","+response.data[i].point.lon+")")));
+                }
+
             }
-            capitalCityMarker = L.marker([latitude,longitude], {icon:capitalMarker}).bindPopup(countryObject.capitalName);
-            capitalCityMarker.addTo(worldMap);
-            worldMap.addLayer(countryMarkers);
-           
+            countryMarkers.addLayer(L.marker([latitude,longitude], {icon:capitalMarker}).bindPopup(countryObject.capitalName));
             },
         error: function(jqXHR, textStatus, errorThrown) {
             //[Handle errors]
             console.log(error, jqXHR, textStatus, errorThrown);
         }
-    })
-    
+    });
+    worldMap.addLayer(countryMarkers);
     };
-}
 
 //Trigger when a country is selected
 // Needs to be reconfigured to work for options
@@ -330,6 +339,7 @@ $('#dropdownList').change(function() {
         $('#ModalCenter').modal('show');
     }
 })
+
 $('#closeModal').click(function() {
     $('#ModalCenter').modal('hide');
 })
