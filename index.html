@@ -25,20 +25,16 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark">
-        <select id="dropdownList" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-            <option id="defaultOption" selected>Choose a country</option>
-        </select>
-      </nav>
+    <select id="dropdownList" class="form-select form-select-lg top-0 start-50 translate-middle" aria-label=".form-select-lg example">
+        <option id="defaultOption" selected>Choose a country</option>
+    </select>
     <!-- Modal PC -->
-    <div class="modal" id="ModalCenter" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+    <div class="modal" id="ModalGeneral" tabindex="-1">
+        <div class="modal-dialog">
             <div class="modal-content" id="modalWindow">
                 <div class="modal-header">
-                    <h5 class="modal-title justify-content-center" id="ModalLongTitle">Country Details</h5>
-                    <button type="button" id="closeModal" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
+                    <h5 class="modal-title" id="ModalLongTitle">Country Details</h5>
+                    <button type="button" id="closeModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
@@ -48,7 +44,7 @@
 
                                 <tr class="table-primary">
 
-                                    <th colspan="4">General Details</th>
+                                    <th colspan="3">General Details</th>
 
                                 </tr>
 
@@ -56,38 +52,38 @@
 
                             <tbody>
 
-                                <tr>
+                                <tr class="align-middle">
 
-                                    <th scope="row" colspan="2"><i class="bi bi-person"></i> Population</th>
-                                    <td id="populationModal" colspan="2" class="align-left">1</td>
-
-                                </tr>
-
-                                <tr>
-
-                                    <th scope="row" colspan="2"><i class="bi bi-translate"></i> Primary Language</th>
-
-                                    <td id="languageModal" colspan="1"" class="align-right"></td>
-
-                                </tr>
-                                <tr>
-
-                                    <th scope="row" colspan="2"><i class="bi bi-cash-coin"></i> Currency</th>
-
-                                    <td id="currencyNameModal" class="align-center" colspan="1"></td>
+                                    <th scope="row" colspan="1"><i class="bi bi-person"></i> Population</th>
+                                    <td id="populationModal" colspan="2" class="align-right">1</td>
 
                                 </tr>
 
                                 <tr>
 
-                                    <th scope="row" colspan="2"><i class="bi bi-clock" ></i> Timezones</th>
+                                    <th scope="row" colspan="1"><i class="bi bi-translate"></i> Primary Language</th>
+
+                                    <td id="languageModal" colspan="2" class="align-right"></td>
+
+                                </tr>
+                                <tr>
+
+                                    <th scope="row" colspan="1"><i class="bi bi-cash-coin"></i> Currency</th>
+
+                                    <td id="currencyNameModal" class="align-right" colspan="1"></td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <th scope="row" colspan="1"><i class="bi bi-clock" ></i> Timezones</th>
 
                                     <td id="timezoneModal" colspan="1" class="align-left"></td>
 
                                 </tr>
                                 <tr>
 
-                                    <th scope="row" colspan="2"><i class="bi bi-border-all"></i> Area Size</th>
+                                    <th scope="row" colspan="1"><i class="bi bi-border-all"></i> Area Size</th>
 
                                     <td id="areaModal" colspan="1" class="align-left"></td>
                                 </tr>
@@ -106,7 +102,7 @@
 
                                 <tr>
 
-                                    <th scope="row" colspan="2"><i class="bi bi-building"></i> Capital city</th>
+                                    <th scope="row" colspan="1"><i class="bi bi-building"></i> Capital city</th>
 
                                     <td id="capitalModal" colspan="1" class="align-left"></td>
                                 </tr>
@@ -118,7 +114,7 @@
 
                                 <tr>
 
-                                    <th scope="row" colspan="2"><i class="bi bi-geo-alt"></i> Geographical Location</th>
+                                    <th scope="row" colspan="1"><i class="bi bi-geo-alt"></i> Geographical Location</th>
 
                                     <td id="coordinatesModal" colspan="1"></td>
 
@@ -145,7 +141,8 @@
                                 <tr>
 
                                     <td  class="align-right" colspan="1" ><i class="bi bi-thermometer-half "></i>Current Temperature</td>
-                                    <td id="temperatureModal" colspan="2" class="align-left"></td>
+                                    <td id="temperatureModal" colspan="1" class="align-left"></td>
+                                    <td id="windModal" class="border" colspan="1"></td>
 
 
                                 </tr>
@@ -154,7 +151,6 @@
 
                                     <td id="humidityModal" class="border" colspan="1"></td>
                                     <td id="pressureModal" class="border" colspan="1"></td>
-                                    <td id="windModal" class="border" colspan="1"></td>
 
                                 </tr>
                             </tbody>
@@ -163,7 +159,7 @@
 
                                     <tr class="table-success">
 
-                                        <th colspan="4" id="forecast">Upcoming Weather</th>
+                                        <th colspan="3" id="forecast">Upcoming Weather</th>
 
                                     </tr>
                                     <tr>
@@ -195,6 +191,61 @@
             </div>
         </div>
     </div>
+    <div class="modal" id="ModalNews" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Latest News</h5>
+              <button type="button" class="btn-close" id="closeNews" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id = "newsContainer" class="modal-body align-middle">
+                
+                <div class="card" style="width: 100%;">
+                    <img id="thumbnail1" class="card-img-top" src="..." alt="Card image cap">
+                    <div class="card-body">
+                      <h5 id="newsTitle1" class="card-title"></h5>
+                      <p id="newsContent1" class="card-text"></p>
+                    </div>
+                  </div>
+
+                  <div class="card" style="width: 100%;">
+                    <img id="thumbnail2" class="card-img-top" src="..." alt="Card image cap">
+                    <div class="card-body">
+                      <h5 id="newsTitle2" class="card-title"></h5>
+                      <p id="newsContent2" class="card-text"></p>
+                    </div>
+                  </div>
+
+                  <div class="card" style="width: 100%;">
+                    <img id="thumbnail3" class="card-img-top" src="..." alt="Card image cap">
+                    <div class="card-body">
+                      <h5 id="newsTitle3" class="card-title"></h5>
+                      <p id="newsContent3" class="card-text"></p>
+                    </div>
+                  </div>
+
+                  <div class="card" style="width: 100%;">
+                    <img id="thumbnail4" class="card-img-top" src="..." alt="Card image cap">
+                    <div class="card-body">
+                      <h5 id="newsTitle4" class="card-title"></h5>
+                      <p id="newsContent4" class="card-text"></p>
+                    </div>
+                  </div>
+
+                  <div class="card" style="width: 100%;">
+                    <img id="thumbnail5" class="card-img-top" src="..." alt="Card image cap">
+                    <div class="card-body">
+                      <h5 id="newsTitle5" class="card-title"></h5>
+                      <p id="newsContent5" class="card-text"></p>
+                    </div>
+                  </div>
+                
+            </div>
+            <div class="modal-footer">
+            </div>
+          </div>
+        </div>
+      </div>
     
     <div id="mapid"></div>
 
